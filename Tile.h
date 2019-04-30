@@ -9,9 +9,18 @@ typedef char Colour;
 typedef int Shape;
 
 class Tile {
-public:
-   Colour colour;
-   Shape  shape;
+    
+    // Creates new Tile object
+    Tile(Colour colour, Shape shape);
+
+   Colour getColour();
+   Shape getShape();
+
+
+
+    public:
+    Colour colour;
+    Shape  shape;
 };
 
 #endif // ASSIGN2_TILE_H
