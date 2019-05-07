@@ -43,32 +43,8 @@ public void Player::display(){
    }
 }
 
-public void Player::populate(){
-    // may need to pass in reference or pointer to bag as a param
-    if(!hand.empty()){
-    for(int x = 0; x < HAND_SIZE; x++){
-        // RNG randomly picks a Tile from the bag
-        // Tile random = param->grabTile();
-        hand.push_back(random);
-    }
-    }
-    else{
-        cout << "Error: " << name << "'s hand has already been dealt" << endl;
-        cout << "No changes made" << endl;
-    }
-}
-
 public void Player::add(Tile putIn){
-    // may need to apss in rference or pointer to bag as a param
-    if(!hand.empty()){
-        // RNG randomly picks a Tile from the bag
-        // Tile random = pararm->grabTile();
-        hand.push_back(random);
-    }
-    else{
-        cout << "Error: " << name << "'s hand is empty" << endl;
-        cout << "No changes made" << endl;
-    }
+    hand.push_back(putIn);   
 }
 
 public void Player::replace(Tile takeOut, Tile putIn){
