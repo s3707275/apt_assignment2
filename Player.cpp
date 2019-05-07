@@ -1,23 +1,23 @@
 #include "Player.h"
-#include "Tile.h"
+#include "Node.h"
 
 #include <iostream>
-#include <vector>
 
 using std::string;
 using std::vector;
 using std::cout;
 using std::endl;
 
-#define HAND_SIZE   6
+#define HAND_SIZE   6  
 
 string name;
-vector<Tile> hand;
+Node* head;
 int score;
 
 Player::Player(string name){
     this->name = name;
     this->score = 0;
+    head = nullptr;
 }
 
 string Player::getName(){
@@ -33,57 +33,46 @@ void Player::setScore(int score){
 }
 
 void Player::display(){
-   if(!hand.empty()){
-        for(int x = 0; x < HAND_SIZE; x++){
-           cout << hand[x].getShape() << hand[x].getColour() << ", ";
-        }
-   }
-   else{
-       cout << "Error: " << name << "'s hand is empty" << endl;
-   }
+    Node* currNode = head;
+    while(currNode->next != nullptr){
+        Tile currTile = currNode->tile;
+        cout <<"("<< currTile->shape <<", "<< currTile->colour << ")";
+        currNode = currNode->next;
+    }
 }
 
-void Player::add(Tile putIn){
-    hand.push_back(putIn);   
+void Player::add(Tile toAdd){
+    Node* currNode = head;
+    while(currNode->next != nullptr){
+        currNode = currNode->next;
+    }
+    Node* newNode = new Node(nullptr, toAdd);
+    currNode->next = newNode;
 }
 
 void Player::replace(Tile takeOut, Tile putIn){
-    if(!hand.empty()){
-        boolean exists = false;
-        for(int x = 0; x < HAND_SIZE; x++){
-           if(hand[x] == takeOut){
-               hand[x] = putIn;
-               exists = true;
-           }
+    Node* currNode = head;
+    while(currNode->next != nullptr){
+        Tile currTile = currNode->tile;
+        if(currTile->shape == takeOut->shape && currTile->colour == takeOut->colour){
+            currTile->shape = putIn->shape;
+            currTile->colour = putIn->colour;
         }
-        if(!exists){
-             printf("Error: (%c,%d) doesn't exist in %s's hand\n", takeOut.getShape(), takeOut.getColour(), name.c_str());
-             cout << "No changes made" << endl;
-        }
-    }
-    else{
-        cout << "Error: " << name << "'s hand is empty" << endl;
-        cout << "No changes made" << endl;
-
+        currNode = currNode->next;
     }
 }
-
 
 void Player::remove(Tile toRemove){
-    if(!hand.empty()){
-        boolean exists = false;
-        for(int x = 0; x < HAND_SIZE; x++){
-            if(hand[x] == toRemove){
-                // removes desired tile and resizes vector (hand)
-                hand.erase(hand.begin()+x);
-                exists = true;
-            }
+    Node* currNode = head;
+    Node* prevNode = nullptr;
+    while(currNode->next != nullptr){
+        Tile currTile = currNode->tile;
+        if(currTile->shape == toRemove->shape && currTile->colour == toRemove->colour){
+            prevNode->next = currNode->next;
+            delete currNode;
         }
-        if(!exists){
-            printf("Error: (%c,%d) doesn't exist in %s's hand\n", toRemove.getShape(), toRemove.getColour(), name.c_str());
-        }
-    }
-    else{
-        cout << "Error: " << name << "'s hand is empty" << endl;
+        prevNode = currNode;
+        currNode = currNode->next;
     }
 }
+
