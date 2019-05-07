@@ -11,28 +11,28 @@ using std::endl;
 
 #define HAND_SIZE   6
 
-private string name;
-private vector<Tile> hand;
-private int score;
+string name;
+vector<Tile> hand;
+int score;
 
-public Player::Player(string name){
+Player::Player(string name){
     this->name = name;
     this->score = 0;
 }
 
-public string Player::getName(){
+string Player::getName(){
     return name;
 }
 
-public int Player::getScore(){
+int Player::getScore(){
     return score;
 }
 
-public void Player::setScore(int score){
+void Player::setScore(int score){
     this->score += score;
 }
 
-public void Player::display(){
+void Player::display(){
    if(!hand.empty()){
         for(int x = 0; x < HAND_SIZE; x++){
            cout << hand[x].getShape() << hand[x].getColour() << ", ";
@@ -43,11 +43,11 @@ public void Player::display(){
    }
 }
 
-public void Player::add(Tile putIn){
+void Player::add(Tile putIn){
     hand.push_back(putIn);   
 }
 
-public void Player::replace(Tile takeOut, Tile putIn){
+void Player::replace(Tile takeOut, Tile putIn){
     if(!hand.empty()){
         boolean exists = false;
         for(int x = 0; x < HAND_SIZE; x++){
@@ -69,7 +69,7 @@ public void Player::replace(Tile takeOut, Tile putIn){
 }
 
 
-public void Player::remove(Tile toRemove){
+void Player::remove(Tile toRemove){
     if(!hand.empty()){
         boolean exists = false;
         for(int x = 0; x < HAND_SIZE; x++){

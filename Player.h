@@ -5,6 +5,7 @@
 class Player {
 
     // Creates a Player object
+public:
     Player(String name);
 
     // Getters and Setters for class variables
@@ -23,7 +24,7 @@ class Player {
     void replace(Tile takeOut, Tile putIn);
     void remove(Tile toRemove);
 
-    public:
+private:
     std::string name;
     std::vector<Tile> hand;
     int score;
