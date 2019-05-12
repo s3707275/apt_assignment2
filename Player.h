@@ -4,6 +4,7 @@
 
 class Player {
 
+  public:
     // Creates a Player object
     Player(String name);
 
@@ -20,9 +21,12 @@ class Player {
     void replace(Tile takeOut, Tile putIn);
     void remove(Tile toRemove);
 
-    private:
+    // Returns amount of tiles in current player's hand
+    int handSize();
+
+  private:
     std::string name;
-    Node* next;
+    Node* head;
     int score;
 
 };
