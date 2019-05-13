@@ -15,24 +15,25 @@ std::string Menu::getPlayerName(int player) {
   printf("Enter a name for player %d (uppercase characters only)\n", player);
   std::cout << "> ";
   std::getline(std::cin, name);
-  // std::cin >> name;
-  std::cout << '\n';
 
+  while (name == "") {
+    std::cout << "Invalid Input" << '\n';
+    std::cout << "> ";
+    std::getline(std::cin, name);
+  }
 
   /* Validate Name using ASCII Values */
   for (int i = 0; i < name.length(); ++i) {
     if (name[i] == 32) {
       // Allows for space in Names
     }
-    else if(name[i] < 65 || name[i] > 90) { //32 is space
-      std::cout << "INVALID INPUT, TRY AGAIN" << '\n';
-      name = getPlayerName(player);
+    while (name[i] < 65 || name[i] > 90) { //32 is ASCII for space
+      std::cout << "Invalid Input" << '\n';
+      std::cout << "> ";
+      std::getline(std::cin, name);
     }
   }
-
-
   return name;
-
 }
 
 void Menu::printStudentInfo(std::string name[], std::string id[], std::string email[]) {

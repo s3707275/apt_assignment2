@@ -13,7 +13,7 @@ int main(void) {
 
   bool quit = false;
   bool newGame = true;
-  char input ='\0';
+  char input = '\0';
   Menu* menu = new Menu();
   std::string player[NUM_PLAYER];
 
@@ -40,34 +40,35 @@ int main(void) {
   std::cout << "-------------------" << std::endl;
 
   /* Qwirkle Program Runs Here */
+  menu->printMenu();
   do {
-    menu->printMenu();
+    // menu->printMenu();
     getInput(input);
     std::cin.ignore ( std::numeric_limits<std::streamsize>::max(), '\n' );
 
     if (input == '1') {
+
       if (!newGame) {
         std::cout << "Continuing Game..\n" << std::endl;
-
       }
       else {
         std::cout << "Starting a New Game\n" << std::endl;
         newGame = false;
       }
+      /* Reading in Player names if its a New Game */
       for (int i = 0; i < NUM_PLAYER; ++i) {
         if (player[i] != "") {
           std::cout << "Current Player "
           << (i+1)
           << ": "
           << player[i]
-          << '\n'
           << std::endl;
         }
         else{
           player[i] = menu->getPlayerName(i+1);
         }
       }
-      std::cout << "Lets Play!\n" << std::endl;
+      std::cout << "\nLets Play!\n" << std::endl;
 
 
       //RUN GAME
@@ -75,15 +76,18 @@ int main(void) {
       // 2. Set up the initial player hands
       // 3. Start with an empty board, with player 1 as the starting player
 
-      // to exit or return to Main Menu
+      /* To exit or return to Main Menu */
       std::string exit = "";
-      std::cout << "Input 'q' to exit or press 'Enter' to return to Main Menu" << '\n';
+      std::cout << "Input 'q' to exit or press 'Enter' to return to Main Menu" << std::endl;
+      std::cout << "> ";
       std::getline(std::cin, exit);
+
       if (exit == "q") {
         quit = true;
       }
       else {
         quit = false;
+        menu->printMenu();
       }
     }
     else if (input == '2') {
@@ -105,7 +109,7 @@ int main(void) {
       quit = true;
     }
     else {
-      std::cout << "INVALID INPUT, TRY AGAIN." << '\n' << std::endl;
+      std::cout << "Invalid Input" << std::endl;
     }
   }
   while (!quit);
@@ -116,5 +120,7 @@ int main(void) {
 void getInput(char& input) {
   std::cout << "> ";
   std::cin >> input;
-  std::cout << '\n';
+  // std::cout << '\n';
 }
+
+//Might Wanna add a Save Method
