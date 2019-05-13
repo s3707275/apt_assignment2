@@ -14,9 +14,10 @@ std::string Menu::getPlayerName(int player) {
   std::string name = "";
   printf("Enter a name for player %d (uppercase characters only)\n", player);
   std::cout << "> ";
-  // std::getline(std::cin, name); Currently working on
-  std::cin >> name;
+  std::getline(std::cin, name);
+  // std::cin >> name;
   std::cout << '\n';
+
 
   /* Validate Name using ASCII Values */
   for (int i = 0; i < name.length(); ++i) {
@@ -35,10 +36,12 @@ std::string Menu::getPlayerName(int player) {
 }
 
 void Menu::printStudentInfo(std::string name[], std::string id[], std::string email[]) {
-  for (int i = 0; i < 3; ++i) {
+  std::cout << "------------------------------\n" << std::endl;
+  for (int i = 0; i < PROJECT_GROUPSIZE; ++i) {
     std::cout << "Name: " << name[i] << std::endl;
     std::cout << "Student ID: " << id[i] << std::endl;
     std::cout << "Email: " << email[i] << std::endl;
     std::cout << std::endl;
   }
+  std::cout << "------------------------------\n" << std::endl;
 }

@@ -8,6 +8,9 @@ void getInput(char& input);
 
 int main(void) {
 
+  //LinkedList* list = new LinkedList();
+  //delete list;
+
   bool quit = false;
   char input ='\0';
   Menu* menu = new Menu();
@@ -39,14 +42,12 @@ int main(void) {
   do {
     menu->printMenu();
     getInput(input);
+    std::cin.ignore ( std::numeric_limits<std::streamsize>::max(), '\n' );
     if (input == '1') {
       std::cout << "Starting a New Game\n" << std::endl;
+
       player[0] = menu->getPlayerName(1);
-
       player[1] = menu->getPlayerName(2);
-
-      std::cout << player[0] << '\n';
-      std::cout << player[1] << '\n';
 
       std::cout << "Lets Play!" << std::endl;
 
@@ -54,11 +55,19 @@ int main(void) {
       // 1. Create the ordering for the tile bag
       // 2. Set up the initial player hands
       // 3. Start with an empty board, with player 1 as the starting player
-      quit = true;
+      quit = true; // to call exit when needed
     }
     else if (input == '2') {
-      std::cout << "LOAD GAME" << '\n';
-      //LOAD FROM SAVE./
+      std::cout << "Enter the filename from which load a game" << std::endl;
+      // User enters relative path
+
+      // 1. Check that the file exists.
+      // 2. Check that the format of the file is correct
+
+      // If validation checks out
+      std::cout << "Qwirkle game successfully loaded" << std::endl;
+      //gameplay continue from here
+      quit = true; // to call exit when needed
     }
     else if (input == '3') {
       menu->printStudentInfo(name, id, email);

@@ -1,5 +1,6 @@
 #include <iostream>
 
+#define PROJECT_GROUPSIZE     3
 class Menu {
 public:
   void printMenu();
