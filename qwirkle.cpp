@@ -12,6 +12,7 @@ int main(void) {
   //delete list;
 
   bool quit = false;
+  bool newGame = true;
   char input ='\0';
   Menu* menu = new Menu();
   std::string player[NUM_PLAYER];
@@ -43,19 +44,47 @@ int main(void) {
     menu->printMenu();
     getInput(input);
     std::cin.ignore ( std::numeric_limits<std::streamsize>::max(), '\n' );
+
     if (input == '1') {
-      std::cout << "Starting a New Game\n" << std::endl;
+      if (!newGame) {
+        std::cout << "Continuing Game..\n" << std::endl;
 
-      player[0] = menu->getPlayerName(1);
-      player[1] = menu->getPlayerName(2);
+      }
+      else {
+        std::cout << "Starting a New Game\n" << std::endl;
+        newGame = false;
+      }
+      for (int i = 0; i < NUM_PLAYER; ++i) {
+        if (player[i] != "") {
+          std::cout << "Current Player "
+          << (i+1)
+          << ": "
+          << player[i]
+          << '\n'
+          << std::endl;
+        }
+        else{
+          player[i] = menu->getPlayerName(i+1);
+        }
+      }
+      std::cout << "Lets Play!\n" << std::endl;
 
-      std::cout << "Lets Play!" << std::endl;
 
       //RUN GAME
       // 1. Create the ordering for the tile bag
       // 2. Set up the initial player hands
       // 3. Start with an empty board, with player 1 as the starting player
-      quit = true; // to call exit when needed
+
+      // to exit or return to Main Menu
+      std::string exit = "";
+      std::cout << "Input 'q' to exit or press 'Enter' to return to Main Menu" << '\n';
+      std::getline(std::cin, exit);
+      if (exit == "q") {
+        quit = true;
+      }
+      else {
+        quit = false;
+      }
     }
     else if (input == '2') {
       std::cout << "Enter the filename from which load a game" << std::endl;
@@ -73,7 +102,6 @@ int main(void) {
       menu->printStudentInfo(name, id, email);
     }
     else if (input == '4') {
-      std::cout << "Goodbye!" << '\n';
       quit = true;
     }
     else {
@@ -81,6 +109,7 @@ int main(void) {
     }
   }
   while (!quit);
+  std::cout << "Goodbye!" << '\n';
   return EXIT_SUCCESS; // EXIT POINT
 }
 
