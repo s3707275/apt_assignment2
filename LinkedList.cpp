@@ -7,7 +7,8 @@ LinkedList::LinkedList() {
    this->length = 0;
 }
 
-LinkedList::~LinkedList() {
+LinkedList::~LinkedList()
+{
 }
 
 void LinkedList::addFront(Tile* newTile){
@@ -119,4 +120,17 @@ void LinkedList::removeTail(){
   tail = previousNode;
   previousNode->next = nullptr;
   delete currentNode;
+}
+
+Tile* LinkedList::removeFromBag(){
+  // shuffle method
+  // chooses a random value in the LinkedList, between 0 and
+  int min = 0;
+  int max = length;
+  int seed = 1234;
+  std::default_random_engine engine(seed);
+  std::uniform_int_distribution<int> uniform_dist(min, max);
+  int pos = uniform_dist(engine);
+  std::cout << "Randomly-chosen position: " << pos << std::endl;
+  return this->get(pos);
 }

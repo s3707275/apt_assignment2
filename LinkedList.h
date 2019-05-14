@@ -19,6 +19,8 @@ public:
    void removeHead()
    void removeTail();
 
+   Tile* removeFromBag()
+
 private:
    Node* head;
    Node* tail;
