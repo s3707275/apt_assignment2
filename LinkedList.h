@@ -12,6 +12,8 @@ public:
 
 private:
    Node* head;
+   Node* tail;
+   int length;
 };
 
 #endif // ASSIGN2_LINKEDLIST_H
