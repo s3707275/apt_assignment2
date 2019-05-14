@@ -15,6 +15,9 @@ public:
    void addBack(Tile* newTile);
    Node* get(int pos);
    boolean search(Tile* currentTile);
+   void remove(int pos)
+   void removeHead()
+   void removeTail();
 
 private:
    Node* head;
