@@ -124,7 +124,9 @@ void LinkedList::removeTail(){
 
 Tile* LinkedList::removeFromBag(){
   // shuffle method
-  // chooses a random value in the LinkedList, between 0 and
+  // chooses a random value in the LinkedList, between 0 and the length of the LinkedList
+  // this will always draw the tile at the same position though
+  // how to select a random position entirely
   int min = 0;
   int max = length;
   int seed = 1234;
