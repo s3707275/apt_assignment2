@@ -13,3 +13,6 @@ this->next = other->next;
 {
    // TODO
 }
+
+Node::~Node() {
+}

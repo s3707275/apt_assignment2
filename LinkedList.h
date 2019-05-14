@@ -10,6 +10,12 @@ public:
    LinkedList();
    ~LinkedList();
 
+   void addFront(Tile* newTile);
+   void insertAt(int pos, Tile* newTile);
+   void addBack(Tile* newTile);
+   Node* get(int pos);
+   boolean search(Tile* currentTile);
+
 private:
    Node* head;
    Node* tail;

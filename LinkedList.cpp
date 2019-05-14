@@ -10,47 +10,73 @@ LinkedList::LinkedList() {
 LinkedList::~LinkedList() {
 }
 
-void addFront(Tile* newTile){
-  Node *new_node = new Node();
-  new_node->tile = newTile;
-  new_node->head = head;
-  this->head = new_node;
+void LinkedList::addFront(Tile* newTile){
+  // places tile at front of linked LinkedList
+  // moves head pointer to the new tile and head next pointer to old head
+  // if list is empty, new node becomes head and tail
+  // constant time complexity
+  Node *newNode = new Node();
+  newNode->tile = newTile;
+  newNode->head = head;
+  this->head = newNode;
   if(length == 0){
-    this->tail = new_node;
+    this->tail = newNode;
   }
   legnth++;
 }
 
-void addBack(Tile* newTile){
-  Node *new_node = new Node();
-  new_node->tile = newTile;
+void LinkedList::insertAt(int pos, Tile* newTile){
+  // checks length of LinkedList, find position in LinkedList
+  // changes prvious node's pointer to the new node and points new node to the pointer of the current node
+  // linear time complexity
+  if(length < pos){
+    Node *previousNode = nullptr;
+    Node *currentNode = this->head;
+
+    for(int i = 1; i < pos; i++){
+      previousNode = currentNode;
+      currentNode = currentNode->next;
+    }
+
+    Node *newNode = nullptr;
+    previousNode->next = newNode;
+    newNode->tile = newTile;
+    newNode->next = currentNode;
+    length++;
+  }
+}
+
+void LinkedList::addBack(Tile* newTile){
+  // uses the tail pointer to allow for constant time complexity
+  // attempts to place tile at end of the LinkedList
+  // if list is empty, tile is head and tail
+  Node *newNode = new Node();
+  newNode->tile = newTile;
   if(length == 0){
-    this->head = new_node;
-    this->tail = new_node;
+    this->head = newNode;
+    this->tail = newNode;
   }
   else {
-    this->tail->next = new_node;
-    this->tail = new_node;
+    this->tail->next = newNode;
+    this->tail = newNode;
   }
   length--;
 }
 
-Node* get(int searchInt){
+Node* LinkedList::get(int pos){
   Node *currentNode = head;
-  int i = 0;
-  if (searchInt < 0 || searchInt > length){
+  if (pos < 0 || pos > length){
     return nullptr;
   }
-  while(i < searchInt) {
+  for(int i = 0; i < pos; i++){
     currentNode = currentNode->next;
-    i++;
   }
   return currentNode;
 }
 
-boolean search(Tile* currentTile){
+boolean LinkedList::search(Tile* currentTile){
   Node* currentNode = head;
-  for (int i = 0; i < this->length; i++){
+  for (int i = 0; i < length; i++){
     if (currentNode->tile == currentTile){
       return true;
     }
@@ -59,6 +85,6 @@ boolean search(Tile* currentTile){
   return false;
 }
 
-void remove(){
+void LinkedList::remove(){
 
 }
