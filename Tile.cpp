@@ -2,22 +2,25 @@
 #include "Tile.h"
 #include "TileCodes.h"
 
+Colour colour;
+Shape shape;
 
-private Colour colour;
-private Shape shape;
-
-public Tile::Tile(Colour colour, Shape shape){
+Tile::Tile(Colour colour, Shape shape){
     this->colour = colour;
     this->shape = shape;
 }
 
-public Colour Tile::getColour(){
+Colour Tile::getColour(){
     return colour;
 }
 
-public Shape Tile::getShape(){
+Shape Tile::getShape(){
     return shape;
 }
+
+
+
+
 
 
 

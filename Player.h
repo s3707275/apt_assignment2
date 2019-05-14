@@ -4,6 +4,7 @@
 
 class Player {
 
+  public:
     // Creates a Player object
     Player(String name);
 
@@ -15,17 +16,17 @@ class Player {
     // Prints player's hand to console
     void display();
 
-    // Randomly populates player's hand relative to the bag of tiles
-    void populate();
-
     // Add, replaces and removes tiles relative to player's actions during game
-    void add(Tile putIn);
+    void add(Tile toAdd);
     void replace(Tile takeOut, Tile putIn);
     void remove(Tile toRemove);
 
-    public:
+    // Returns amount of tiles in current player's hand
+    int handSize();
+
+  private:
     std::string name;
-    std::vector<Tile> hand;
+    Node* head;
     int score;
 
 };
