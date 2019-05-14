@@ -64,6 +64,9 @@ void LinkedList::addBack(Tile* newTile){
 }
 
 Node* LinkedList::get(int pos){
+  // linear time
+  // finds the value of the tile at a given position
+  // checks position is a legal value
   Node *currentNode = head;
   if (pos < 0 || pos > length){
     return nullptr;
@@ -76,6 +79,7 @@ Node* LinkedList::get(int pos){
 
 boolean LinkedList::search(Tile* currentTile){
   Node* currentNode = head;
+
   for (int i = 0; i < length; i++){
     if (currentNode->tile == currentTile){
       return true;
@@ -85,6 +89,34 @@ boolean LinkedList::search(Tile* currentTile){
   return false;
 }
 
-void LinkedList::remove(){
+void LinkedList::remove(int pos){
+  Node *currentNode = head;
+  Node *previousNode = nullptr;
 
+  for(int i = 1; i < pos; i++) {
+    previousNode = currentNode;
+    currentNode = currentNode->next;
+  }
+  previousNode->next = currentNode->next;
+  delete currentNode;
+}
+
+void LinkedList::removeHead(){
+  // constant time
+  Node *temp = head;
+  head = head->next;
+  delete temp;
+}
+
+void LinkedList::removeTail(){
+  Node *currentNode = head;
+  Node *previousNode = nullptr;
+
+  while(currentNode->next!=nullptr) {
+    currentNode=current;
+    currentNode=currentNode->next;
+  }
+  tail = previousNode;
+  previousNode->next = nullptr;
+  delete currentNode;
 }
