@@ -1,112 +1,45 @@
+
 #include "Player.h"
-#include "Node.h"
-#include "Tile.h"
 
-#include <iostream>
-
-using std::string;
-
-#define HAND_SIZE   6
-
- 
-string name;
-Node* head;
-int score;
-
-Player::Player(string name){
-    this->name = name;
-    this->score = 0;
-    head = nullptr;
+Player::Player(std::string name){
+  this->name = name;
+  this->score = 0;
+  this->hand = new LinkedList();
 }
 
-string Player::getName(){
-    return name;
+Player::~Player() {
+  // destructor
+  delete hand;
 }
 
-int Player::getScore(){
-    return score;
+// Method called when game commences to
+// give the player 6 tiles - maybe addTile only
+void Player::giveNewHand(){
+
 }
 
-void Player::setScore(int score){
-    if(score >= 0){
-        this->score += score;
-    }
-    else{
-         std::cerr << "Error: " << score << " is an invalid score to set to a player" << std::endl;
-    }
+// Method to print the players hand
+void Player::displayHand(){
+
 }
 
-void Player::display(){
-    if(head->next != nullptr){
-        Node* curr = head;
-        while(curr->next != nullptr){
-            Tile tile = curr->tile;
-            cout << tile->shape <<", "<< tile->colour << " ";
-            curr = curr->next;
-      }
-    }
-    else{
-        std::cerr << "Error: " << name << "'s hand is empty" << std::endl;
-    }
+// Adds a new tile to the head of the hand
+void Player::addTile(){
+
 }
 
-void Player::add(Tile toAdd){
-    if(handSize() != HAND_SIZE){
-        Node* curr = head;
-        while(curr->next != nullptr){
-            curr = curr->next;
-        }
-        Node* newNode = new Node(nullptr, toAdd);
-        curr->next = newNode;
-    }
-    else{
-         std::cerr << "Error: " << name << "'s hand already contains 6 tiles" << std::endl;
-    }          
+// removes specified tile from hand if it exists
+void Player::removeTile(){
+
 }
 
-void Player::replace(Tile takeOut, Tile putIn){
-    boolean exists = false;
-    Node* curr = head;
-    while(curr->next != nullptr){
-        Tile tile = curr->tile;
-        if(tile->shape == takeOut->shape && tile->colour == takeOut->colour){
-            tile->shape = putIn->shape;
-            tile->colour = putIn->colour;
-            exists = true;
-        }
-        curr = curr->next;
-    }
-    if(!exists){
-         std::cerr << "Error: (" << takeOut->shape << ", " << takeOut->colour << ") doesn't exist in " << name << "'s hand" << std::endl;
-    }
+// removes specified tile from hand if it exists
+// and replaces it with a new random tile from the bag
+void Player::replaceTile(){
+
 }
 
-void Player::remove(Tile toRemove){
-    boolean exists = false;
-    Node* curr = head;
-    Node* prev = nullptr;
-    while(curr->next != nullptr){
-        Tile tile = curr->tile;
-        if(tile->shape == toRemove->shape && tile->colour == toRemove->colour){
-            prev->next = curr->next;
-            exists = true;
-            delete curr;
-        }
-        prev = curr;
-        curr = curr->next;
-    }
-    if(!exists){
-          std::cerr << "Error: (" << toRemove->shape << ", " << toRemove->colour << ") doesn't exist in " << name << "'s hand" << std::endl;
-    }
-}
-
+// returns the current amount of tiles in player's hand
 int Player::handSize(){
-    int counter = 0;
-    Node* curr = head;
-    while(curr->next != nullptr){
-        counter++;
-        curr = curr->next;
-    }
-    return counter;
+  return HAND_SIZE;
 }
-
