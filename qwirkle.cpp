@@ -3,6 +3,8 @@
 #include "Player.h"
 
 #include <iostream>
+#include <regex>
+#include <vector>
 
 #define EXIT_SUCCESS    0
 #define COL_INDEX       "    0  1  2  3  4  5  6  7  8  9  10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25\n"
@@ -10,12 +12,13 @@
 #define BOARD_SIZE      26
 
 /* game variables */
-// Player players[2];
+std::vector<Player*> players = {nullptr};
 Tile* board[BOARD_SIZE][BOARD_SIZE] = {{nullptr}};
 
 void printMainMenu(char* input);
 void runMenu(char* input);
 void newPlayers();
+void newGame();
 void printBoard();
 
 int main(void) {
@@ -42,7 +45,15 @@ void runMenu(char* input){
   if(*input == '1'){
     std::cout << "Starting a New Game\n" << std::endl;
     newPlayers();
-    printBoard();
+    // newGame();
+    // while !gameOver
+    // 1. The name of the current player
+    // 2. The scores of both players
+    // 3. The state of the board
+    // 4. The tiles in the current player’s hand
+    // 5. The user prompt
+    // printBoard();
+    std::cout << "Let's Play!" << std::endl;
   }
   else if(*input == '2'){
     std::cout << "Enter the filename from which load a game" << std::endl;
@@ -56,7 +67,7 @@ void runMenu(char* input){
       //gameplay continue from here
   }
   else if(*input == '3'){
-    std::cout << "------------------------------\n" << std::endl;
+    std::cout << "\n\n------------------------------\n" << std::endl;
     std::cout << "Name: Jonathan Diver" << std::endl;
     std::cout << "Student ID: s3707275"  << std::endl;
     std::cout << "Email: s3707275@student.rmit.edu.au\n\n" << std::endl;
@@ -68,7 +79,7 @@ void runMenu(char* input){
     std::cout << "Name: Daniel Ong" << std::endl;
     std::cout << "Student ID: s3676400"  << std::endl;
     std::cout << "Email: s3676400@student.rmit.edu.au" << std::endl;
-    std::cout << "------------------------------\n" << std::endl;
+    std::cout << "------------------------------\n\n" << std::endl;
     printMainMenu(input);
   }
   else {
@@ -85,10 +96,15 @@ void newPlayers(){
     std::cin >> numPlayers;
   }
   std::string name = "";
+  std::regex nameRegex("[A-Z]+");
   for(int i = 1; i <= numPlayers; i++){
-    std::cout << "Enter name for player " << i << " (uppercase characters only)\n> ";
-    std::cin >> name;
-    std::cout << name << std::endl;
+    while(!std::regex_match(name, nameRegex)){
+      std::cout << "Enter name for player " << i << " (uppercase characters only)\n> ";
+      std::cin >> name;
+    }
+    players.push_back(new Player(name));
+    /* resets name for next regex check */
+    name = "";
   }
 }
 
@@ -108,4 +124,10 @@ void printBoard(){
     }
     std::cout << std::endl;
   }
+}
+
+void newGame(){
+  // create bag
+  // give each player 6 tiles
+  // 
 }
