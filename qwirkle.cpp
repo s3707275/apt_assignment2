@@ -15,6 +15,7 @@ Tile* board[BOARD_SIZE][BOARD_SIZE] = {{nullptr}};
 
 void printMainMenu(char* input);
 void runMenu(char* input);
+void newPlayers();
 void printBoard();
 
 int main(void) {
@@ -28,7 +29,7 @@ int main(void) {
 }
 
 void printMainMenu(char* input){
-  std::cout << "Menu\n----\n"; 
+  std::cout << "Menu\n----\n";
   do{
     std::cout << "1. New Game\n" << "2. Load Game\n"
     << "3. Display Student Information\n" << "4. Quit\n" << "> ";
@@ -40,6 +41,7 @@ void printMainMenu(char* input){
 void runMenu(char* input){
   if(*input == '1'){
     std::cout << "Starting a New Game\n" << std::endl;
+    newPlayers();
     printBoard();
   }
   else if(*input == '2'){
@@ -72,6 +74,21 @@ void runMenu(char* input){
   else {
     std::cout << "Goodbye!" << std::endl;
     exit(0);
+  }
+}
+
+void newPlayers(){
+  int numPlayers = 0;
+  /* magic numbers remove these */
+  while(numPlayers != 2 && numPlayers != 3 && numPlayers != 4){
+    std::cout << "Enter number of players in game (2-4)\n> ";
+    std::cin >> numPlayers;
+  }
+  std::string name = "";
+  for(int i = 1; i <= numPlayers; i++){
+    std::cout << "Enter name for player " << i << " (uppercase characters only)\n> ";
+    std::cin >> name;
+    std::cout << name << std::endl;
   }
 }
 
