@@ -28,17 +28,17 @@ void Player::displayHand(){
   hand->display();
 }
 
-// Adds a new tile to the head of the hand
+// Adds a new tile to the head (pos) of the hand
 void Player::addTile(){
 
 }
 
-// removes specified tile from hand if it exists
+// Removes specified tile from hand if it exists
 void Player::removeTile(){
 
 }
 
-// removes specified tile from hand if it exists
+// Removes specified tile from hand if it exists
 // and replaces it with a new random tile from the bag
 void Player::replaceTile(){
 
@@ -46,5 +46,5 @@ void Player::replaceTile(){
 
 // returns the current amount of tiles in player's hand
 int Player::handSize(){
-  return HAND_SIZE;
+  return hand->size();
 }

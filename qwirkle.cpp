@@ -155,17 +155,6 @@ void newGame(){
 
 void firstMove(){
   currentPlayer = players.front();
-  // newGame();
-  // firstMove();
-  // normalGamePlay();
-  //    while !gameOver
-  //    1. The name of the current player
-  //    2. The scores of both players
-  //    3. The state of the board
-  //    4. The tiles in the current player’s hand
-  //    5. The user prompt
-  //    6. Execute user prompt
-  //    7. normalGamePlay()
   std::cout << currentPlayer->name << ", it's your turn\n";
   for (std::vector<Player*>::iterator it = players.begin(); it != players.end(); ++it){
     std::cout << "Score for " << (*it)->name << ": " << (*it)->score << std::endl;
@@ -174,14 +163,22 @@ void firstMove(){
   std::cout << "Your hand is\n";
   currentPlayer->displayHand();
   std::string tileToPlace = " ";
-  std::regex tileRegex("(place (R|O|Y|G|B|P)[1-6]{1})");
+  std::regex tileRegex("place [ROYGBP]{1}[1-6]{1}");
   while(!std::regex_match(tileToPlace, tileRegex)){
-    std::cout << "Choose tile to place at N13\n>";
+    std::cout << "Choose tile to place at N13\n> ";
     std::cin >> tileToPlace;
   }
-  // board[0][13] = new Tile('R', 4);
-  printBoard();
-  // std::cout << "Your hand is\n" << currentPlayer->displayHand() << "> move goes here";
+  // printBoard();
+}
 
-  // std::cin >> input;
+void gameplay(){
+     // while !gameOver
+     //   1. The name of the current player
+     //   2. The scores of both players
+     //   3. The state of the board
+     //   4. The tiles in the current player’s hand
+     //   5. The user prompt
+     //   6. Execute user prompt
+     //   7. gameplay()
+
 }
