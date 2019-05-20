@@ -15,9 +15,9 @@ class Player {
 
     void giveNewHand();
     void displayHand();
-    void addTile();
-    void removeTile();
-    void replaceTile();
+    void addTile(Tile* newTile); // added arg - Will
+    void removeTile(int pos); // added arg - Will
+    void replaceTile(int pos, Tile* tile); // added args - Will
     int handSize();
 
   // private:
