@@ -1,34 +1,30 @@
 
-#ifndef ASSIGN2_TILE_H
-#define ASSIGN2_TILE_H
+#ifndef ASSIGN2_PLAYER_H
+#define ASSIGN2_PLAYER_H
+
+#include <string>
+#include "LinkedList.h"
+
+#define HAND_SIZE          6
 
 class Player {
 
   public:
-    // Creates a Player object
-    Player(String name);
+    Player(std::string name);
+    ~Player();
 
-    // Getters and Setters for class variables
-    std::string getName();
-    int getScore();
-    void setScore(int score);
-
-    // Prints player's hand to console
-    void display();
-
-    // Add, replaces and removes tiles relative to player's actions during game
-    void add(Tile toAdd);
-    void replace(Tile takeOut, Tile putIn);
-    void remove(Tile toRemove);
-
-    // Returns amount of tiles in current player's hand
+    void giveNewHand();
+    void displayHand();
+    void addTile();
+    void removeTile();
+    void replaceTile();
     int handSize();
 
-  private:
+  // private:
     std::string name;
-    Node* head;
     int score;
-
+    LinkedList* hand;
+    // LinkedList hand;
 };
 
-#endif // ASSIGN2_TILE_H
+#endif // ASSIGN2_PLAYER_H
