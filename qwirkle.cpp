@@ -174,7 +174,7 @@ void firstMove(){
   std::cout << "Your hand is\n";
   currentPlayer->displayHand();
   std::string tileToPlace = " ";
-  std::regex tileRegex("place (R|O|Y|G|B|P)[1-6]{1}");
+  std::regex tileRegex("(place (R|O|Y|G|B|P)[1-6]{1})");
   while(!std::regex_match(tileToPlace, tileRegex)){
     std::cout << "Choose tile to place at N13\n>";
     std::cin >> tileToPlace;
