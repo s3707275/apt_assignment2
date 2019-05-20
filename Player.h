@@ -13,7 +13,7 @@ class Player {
     Player(std::string name);
     ~Player();
 
-    void giveNewHand();
+    void giveNewHand(LinkedList& bag);
     void displayHand();
     void addTile();
     void removeTile();

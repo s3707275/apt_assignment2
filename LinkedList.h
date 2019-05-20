@@ -4,6 +4,8 @@
 
 #include "Node.h"
 
+#define EMPTY_BAG       0
+
 class LinkedList {
 public:
 
@@ -19,6 +21,7 @@ public:
    Node* removeHead();
    void display();
    int size();
+   int removeFromBag();
 
    // Tile* removeFromBag();
 

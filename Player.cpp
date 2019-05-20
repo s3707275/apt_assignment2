@@ -14,13 +14,18 @@ Player::~Player() {
 
 // Method called when game commences to
 // give the player 6 tiles - maybe addTile only
-void Player::giveNewHand(){
-
+void Player::giveNewHand(LinkedList& bag){
+  for(int i = 0; i < HAND_SIZE; i ++){
+    int pos = bag.removeFromBag();
+    Tile* tile = bag.get(pos)->tile;
+    hand->addFront(tile);
+    bag.remove(pos);
+  }
 }
 
 // Method to print the players hand
 void Player::displayHand(){
-
+  hand->display();
 }
 
 // Adds a new tile to the head of the hand
