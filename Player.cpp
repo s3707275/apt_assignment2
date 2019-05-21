@@ -16,13 +16,10 @@ Player::~Player() {
 
 // Method called when game commences to
 // give the player 6 tiles - maybe addTile only
-void Player::giveNewHand(){
+void Player::giveNewHand(LinkedList& bag){
   for(int x = 0; x < HAND_SIZE; x++){
-    /*
-    * Function that returns a random tile
-    * Tile* random = hand->randomPick();
-    * hand->addBack(random); - Will
-    */
+    Tile* tile = bag.removeFromBag();
+    hand->addFront(tile);
   }
 }
 
