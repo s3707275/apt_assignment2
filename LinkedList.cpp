@@ -1,6 +1,9 @@
 
 #include "LinkedList.h"
 #include <iostream>
+#include <random>
+#include <cstdlib>
+#include <ctime>
 
 LinkedList::LinkedList() {
    head = nullptr;
@@ -117,4 +120,20 @@ int LinkedList::size(){
     }
   }
   return size;
+}
+
+int LinkedList::removeFromBag(){
+  if(this->size() == EMPTY_BAG){
+    return -1;
+  }
+  else {
+    int minIndex = 1;
+    int maxIndex = this->size();
+    srand(time(NULL));
+    std::default_random_engine engine(rand()%this->size());
+    std::uniform_int_distribution<int> uniformDist(minIndex, maxIndex);
+
+    int pos = uniformDist(engine);
+    return pos;
+  }
 }
