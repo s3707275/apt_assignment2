@@ -162,12 +162,40 @@ void firstMove(){
   printBoard();
   std::cout << "Your hand is\n";
   currentPlayer->displayHand();
-  std::string tileToPlace = " ";
-  std::regex tileRegex("place [ROYGBP]{1}[1-6]{1}");
-  while(!std::regex_match(tileToPlace, tileRegex)){
+  std::string playerPlace = "";
+  // std::regex place("(place )[ROYGBP][1-6]( at )[A-Z](2[0-5]|1[0-9]|0?[0-9])");
+  std::regex firstPlace("(place )[ROYGBP][1-6]");
+  int posOfTile;
+  do {
     std::cout << "Choose tile to place at N13\n> ";
-    std::cin >> tileToPlace;
-  }
+    std::getline(std::cin, playerPlace);
+    // check if tile is in players hand
+    if(std::regex_match(playerPlace, firstPlace)){
+      // get tile index in hand
+      char tileColour = playerPlace.at(6);
+      char charTileShape = playerPlace.at(7);
+      // 48 is ASCII where numbers begin, minusing it yields result
+      int tileShape = charTileShape - 48;
+      std::cout << tileColour << tileShape << std::endl;
+      if(currentPlayer->hand->search(tileColour, tileShape)){
+        std::cout << "if" << std::endl;
+        posOfTile = currentPlayer->hand->positionSearch(tileColour, tileShape);
+      }
+      else {
+        std::cout << "else" << std::endl;
+        std::cout << "Please enter a tile from your hand" << std::endl;
+        playerPlace = "";
+      }
+    }
+  } while(!std::regex_match(playerPlace, firstPlace));
+  //place tile at N13 (center of board)
+  board[13][13] = currentPlayer->hand->get(posOfTile)->tile;
+  int tileInBag = bag->removeFromBag();
+  currentPlayer->hand->remove(posOfTile);
+  currentPlayer->hand->addBack(bag->get(tileInBag)->tile);
+  bag->remove(tileInBag);
+  currentPlayer->displayHand();
+  printBoard();
   // printBoard();
 }
 

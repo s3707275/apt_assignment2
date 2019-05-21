@@ -20,6 +20,8 @@ public:
    Node* remove(int pos);
    Node* removeHead();
    void display();
+   bool search(char searchColour, int searchShape);
+   int positionSearch(char searchColour, int searchShape);
    int size();
    int removeFromBag();
 
