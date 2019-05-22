@@ -1,6 +1,10 @@
 
 #include "Player.h"
 
+std::string name;
+int score;
+LinkedList* hand;
+
 Player::Player(std::string name){
   this->name = name;
   this->score = 0;
@@ -29,19 +33,34 @@ void Player::displayHand(){
 }
 
 // Adds a new tile to the head (pos) of the hand
-void Player::addTile(){
-
+void Player::addTile(Tile* tile){
+  hand->addFront(tile);
 }
 
 // Removes specified tile from hand if it exists
-void Player::removeTile(){
+void Player::removeTile(int pos){
+  hand->remove(pos);
+}
 
+Node* Player::get(int pos){
+  return hand->get(pos);
 }
 
 // Removes specified tile from hand if it exists
 // and replaces it with a new random tile from the bag
-void Player::replaceTile(){
+void Player::replaceTile(int pos, LinkedList& bag){
 
+  // tile is stored and then removed from player's hand
+  Tile* removed = hand->get(pos)->tile;
+  hand->remove(pos);
+
+  // random tile from bag is placed into player's hand
+  int random = bag.removeFromBag();
+  Tile* newTile = bag.get(random)->tile;
+  hand->addFront(newTile);
+
+  // removed tile is placed back into bag
+  bag.addFront(removed);
 }
 
 // returns the current amount of tiles in player's hand

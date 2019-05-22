@@ -1,8 +1,10 @@
 
 #include "LinkedList.h"
 #include "Player.h"
+// #include "Tile.h"
 
 #include <iostream>
+#include <fstream>
 #include <regex>
 #include <vector>
 #include <string>
@@ -24,7 +26,6 @@ std::vector<Player*> players;
 Tile* board[BOARD_SIZE][BOARD_SIZE] = {{nullptr}};
 LinkedList* bag;
 Player* currentPlayer;
-std::vector<std::string> loadedBoard;
 
 void printMainMenu(char* input);
 void runMenu(char* input);
@@ -98,7 +99,6 @@ if(file.is_open()){
 
   // Each vector is used to re-create the game
   // If successful both functions will return true
-  // add this->
   bool playerSuccess = playerCreation(playerData, playing);
   bool boardSuccess = boardCreation(gameData, playing, counter);
 
@@ -106,13 +106,8 @@ if(file.is_open()){
   std::string currentplayer = gameData.at(gameData.size() - 1);
   std::cout << "Current Player: " << currentplayer << std::endl;
 
-  for(std::string data : loadedBoard){
-    std::cout << data << std::endl;
-  }
-
   // If game has successfully been re-created
   if(playerSuccess == true && boardSuccess == true){
-
     std::cout << "Qwirkle game successfully loaded" << std::endl;
   }
   else{
@@ -124,7 +119,11 @@ else{
 }
 file.close();
 
-  }
+// Use to test accuracy of load in
+// std::cout << "CURRENT BOARD" << std::endl;
+// printBoard();
+
+}
   else if(*input == '3'){
     std::cout << "\n\n------------------------------\n" << std::endl;
     std::cout << "Name: Jonathan Diver" << std::endl;
@@ -143,6 +142,7 @@ file.close();
   }
   else {
     std::cout << "Goodbye!" << std::endl;
+    //saveGame();
     exit(0);
   }
 }
@@ -268,36 +268,36 @@ bool playerCreation(std::vector<std::string> playerData, int playing){
   // Regex checks
   std::regex nameRegex("[A-Z]+");
   std::regex scoreRegex("[0-9]+");
-
+  Player* player;
   // For each player: find name, score, hand and re-create
     for(int x = 0; x < playing; x++){
-      Player* player = nullptr;
+      player = nullptr;
 
         // find Name
         if(std::regex_match(playerData.at(x), nameRegex) && success == true){
           name = playerData.at(x);
           std::cout <<"Player Name: "<< name << std::endl;
 
-
           // find Score
           if(std::regex_match(playerData.at(x + 1), scoreRegex)){
             score = std::stoi(playerData.at(x + 1));
             std::cout <<"Player Score: "<< score << std::endl;
-            player = new Player(name, score);
+            player = new Player(name);
+            player->score = score;
+            players.push_back(player);
 
             // Breaks up and adds each tile individually
             playerHand = playerData.at(x + 2);
-            std::string colour;
-            std::string shape;
             std::cout << "Player Hand: ";
             for(int y = 0; y < playerHand.length(); y++){
               if(playerHand.substr(y,1) != ","){
-                colour = playerHand.substr(y,1);
-                shape = playerHand.substr((y + 1),1);
+                std::string letter = playerHand.substr(y,1);
+                char colour = letter.at(0);
+                int shape = std::stoi(playerHand.substr((y + 1),1));
                 std::cout << colour << "" << shape << ", ";
                 Tile* tile = new Tile(colour,shape);
                 player->addTile(tile);
-                y += 2;
+                y += 2; // go to next tile
               }
             }
           }
@@ -318,78 +318,66 @@ bool boardCreation(std::vector<std::string> gameData, int playing, int counter){
   std::string colour;
   std::string shape;
 
+  std::string row;
+  std::smatch matches;
+  std::regex rowRegex("[A-Z]+");
+  std::regex tileRegex("[A-Z][0-9]+");
+
+  // uncomment to print the map from the file
+  // for(int x = playing; x < counter; x++){
+  //   std::cout << gameData.at(x) <<" index "<<x<< std::endl;
+  // }
+
   // x begins at 1st line of board and continues until last value in gameData
   for(int x = playing; x < counter; x++){
-    // stores board in class variable loadedBoard
-
+    row = gameData.at(x);
+    int colIndex = -1;
     if((x + 2) != counter){
-      /*
-      Within this if statement is where: gameData.at(x)
-      will print out the complete board and stop when it
-      reaches the end of the board going into the else statement
-
-      Not sure how to read in and then transfer the board
-      data into the 2D array 'boards'. I was trying to use
-      regex_search methods but it wasn't working properly
-
-      This link: http://www.cplusplus.com/reference/regex/regex_search/
-      For every gameData.at(x) call it will print out a row of the board
-      and I was doing this to find the tiles:
-
-      std::string s;
-      std::smatch m;
-      std::regex e1("[A-Z]+");
-      std::regex e2("[A-Z][0-9]+");
-
-      // x begins at 1st line of board and continues until last value in gameData
-      for(int x = playing; x < counter; x++){
-        s = gameData.at(x);
-
-        if((x + 2) != counter){
-
-          // Finds tiles in each row
-          // (x - playing - 2) = row, z = column
-          if(std::regex_search (s,m,e1)){
-            if(std::regex_search (s,m,e2)){
-              // Only returns one instance of a tile (e.g. A6) in a row
-              // ignoring the others
-              for (auto x:m) std::cout << x << " ";
-              std::cout << std::endl;
+      if(std::regex_search(row,matches,rowRegex)){ // Finds a row A,B,C,etc on the board
+        if(std::regex_search(row,matches,tileRegex)){ // Finds any tiles in that row
+          for(int z = 1; z < row.length(); z++){ // Start at 1 to skip row headings
+            std::string letter = row.substr(z,1);
+            char colour = letter.at(0);
+            if(colour == '|'){
+              colIndex++;
+            }
+            if(std::regex_match(letter, rowRegex)){ // Finds beginning of tile i.e. A
+              int shape = std::stoi(row.substr((z + 1),1));
+              int rowIndex = x - playing - 2;
+              std::cout << "Tiles on board: ("<<rowIndex<<","<<colIndex<<") ";
+              std::cout << colour << shape << std::endl;
+              // using rowIndex and colIndex we can place each tile back into the 2D array
+              Tile* tile = new Tile(colour, shape);
+              board[rowIndex][colIndex] = tile;
             }
           }
         }
-        else{
-          tileBag = gameData.at(x);
-          //std::cout << tileBag << std::endl;
-
-          x++;
-        }
       }
-
-  but it only works for rows that have single tiles in them so I wasn't sure
-      */
-      loadedBoard.push_back(gameData.at(x));
-      //std::cout << loadedBoard.at(x) << std::endl;
-
     }
     else{
       tileBag = gameData.at(x);
-      //std::cout << tileBag << std::endl;
-      x++;
+      x += 2;
     }
   }
 
   // Breaks up and adds each tile individually
-  std::cout << "Tile Bag: ";
+  bag = new LinkedList();
   for(int y = 0; y < tileBag.length(); y++){
     if(tileBag.substr(y,1) != ","){
-      colour = tileBag.substr(y,1);
-      shape = tileBag.substr((y + 1),1);
-      std::cout << colour << "" << shape << ", ";
+      std::string letter = tileBag.substr(y,1);
+      char colour = letter.at(0);
+      int shape = std::stoi(tileBag.substr((y + 1),1));
+      //std::cout << colour << "" << shape << ", ";
       Tile* tile = new Tile(colour,shape);
       bag->addFront(tile);
-      y += 2;
+      y += 2; // move across string to next tile
     }
+  }
+  std::cout << std::endl;
+  std::cout <<"Tile Bag: ";
+  for(int x = 1; x <= bag->size(); x++){
+    std::cout << bag->get(x)->tile->colour;
+    std::cout << bag->get(x)->tile->shape << ", ";
   }
   std::cout << std::endl;
   return success;
@@ -397,35 +385,64 @@ bool boardCreation(std::vector<std::string> gameData, int playing, int counter){
 
 void saveGame(){
 
-// <player 1 name> DONE
-// <player 1 score> DONE
-// <player 1 hand> DONE
-// <player 2 name> DONE
-// <player 2 score> DONE
-// <player 2 hand> DONE
-// <board>
-// <tile bag contents>
-// <current player name>
-
+// writing
 std::ofstream file;
-std::string fileName;
-std::cout << "Enter file path: " << std::endl;
-std::cin >> fileName; // saveFile.txt
-file.open(fileName);
+file.open("saveFile.txt");
 
-// Writes each player's name, score and hand to a file
-for(Player* player : players){
-  file << player->name;
+if(file.is_open()){
+  // Writes each player's name, score and hand to  saveFile.txt file
+  for(Player* player : players){
+    file << player->name;
+    file << "\n";
+    file << player->score;
+    file << "\n";
+    for(int x = 1; x <= TOTAL_TILES; x++){
+      file << player->get(x)->tile->colour;
+      file << player->get(x)->tile->shape;
+      file << " ";
+    }
+    file << "\n";
+  }
+
+  // Writes board to saveFile.txt file
+  char rowLetter = 'A';
+  file << COL_INDEX;
+  file << HASH_ROW;
+  for(int i = 0; i < BOARD_SIZE; i++){
+    file << rowLetter << "  |";
+    rowLetter++;
+    for(int j = 0; j < BOARD_SIZE; j++){
+      if(board[i][j] == nullptr){
+        file << "  |";
+      }
+      else{
+        file << board[i][j]->colour;
+        file << board[i][j]->shape;
+        file << "|";
+      }
+    }
+    file << "\n";
+  }
+
+  // Writes bag and current player to saveFile.txt file
+  for(int x = 1; x <= bag->size(); x++){
+    file << bag->get(x)->tile->colour;
+    file << bag->get(x)->tile->shape;
+    file << " ";
+  }
   file << "\n";
-  file << player->score;
+
+  file << currentPlayer->name;
   file << "\n";
-  file << player->displayHand();
-  file << "\n";
+
+  std::cout << "Game successfully saved" << std::endl;
 }
-// Still need to write board, bag and current player's name to file
-
+else{
+  std::cerr << "Unable to open file" << std::endl;
+}
 
 file.close();
+// back to gameplay
 }
 
 void gameplay(){

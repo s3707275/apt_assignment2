@@ -15,16 +15,16 @@ class Player {
 
     void giveNewHand(LinkedList& bag);
     void displayHand();
-    void addTile();
-    void removeTile();
-    void replaceTile();
+    void addTile(Tile* tile);
+    void removeTile(int pos);
+    void replaceTile(int pos, LinkedList& bag);
+    Node* get(int pos);
     int handSize();
 
   // private:
     std::string name;
     int score;
     LinkedList* hand;
-    // LinkedList hand;
 };
 
 #endif // ASSIGN2_PLAYER_H
