@@ -289,7 +289,8 @@ bool playerCreation(std::vector<std::string> playerData, int playing){
             // Breaks up and adds each tile individually
             playerHand = playerData.at(x + 2);
             std::cout << "Player Hand: ";
-            for(int y = 0; y < playerHand.length(); y++){
+            int length = playerHand.length();
+            for(int y = 0; y < length; y++){
               if(playerHand.substr(y,1) != ","){
                 std::string letter = playerHand.substr(y,1);
                 char colour = letter.at(0);
@@ -332,10 +333,11 @@ bool boardCreation(std::vector<std::string> gameData, int playing, int counter){
   for(int x = playing; x < counter; x++){
     row = gameData.at(x);
     int colIndex = -1;
+    int length = row.length();
     if((x + 2) != counter){
       if(std::regex_search(row,matches,rowRegex)){ // Finds a row A,B,C,etc on the board
         if(std::regex_search(row,matches,tileRegex)){ // Finds any tiles in that row
-          for(int z = 1; z < row.length(); z++){ // Start at 1 to skip row headings
+          for(int z = 1; z < length; z++){ // Start at 1 to skip row headings
             std::string letter = row.substr(z,1);
             char colour = letter.at(0);
             if(colour == '|'){
@@ -362,7 +364,8 @@ bool boardCreation(std::vector<std::string> gameData, int playing, int counter){
 
   // Breaks up and adds each tile individually
   bag = new LinkedList();
-  for(int y = 0; y < tileBag.length(); y++){
+  int length = tileBag.length();
+  for(int y = 0; y < length; y++){
     if(tileBag.substr(y,1) != ","){
       std::string letter = tileBag.substr(y,1);
       char colour = letter.at(0);
