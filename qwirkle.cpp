@@ -18,6 +18,8 @@
 #define ROW_CHAR_REGEX_INDEX  12
 #define COL_INT_REGEX_INDEX   13
 #define ASCII_TO_INT          48
+#define ASCII_A               'A'
+#define INDEX_ZERO            0
 
 /* game variables */
 std::vector<Player*> players;
@@ -32,6 +34,7 @@ void printBoard();
 void newGame();
 void firstMove();
 void gameplay();
+bool validMove(char tileColour, int tileShape, int row, int col);
 
 int main(void) {
 
@@ -90,6 +93,15 @@ void runMenu(char* input){
     printMainMenu(input);
   }
   else {
+    for (std::vector<Player*>::iterator it = players.begin(); it != players.end(); ++it){
+      delete (*it);
+    }
+    for(int i = 0; i < BOARD_SIZE; i++){
+      for(int j = 0; j < BOARD_SIZE; j++){
+        delete board[i][j];
+      }
+    }
+    delete bag;
     std::cout << "Goodbye!" << std::endl;
     exit(0);
   }
@@ -191,8 +203,13 @@ void firstMove(){
         playerPlace = "";
       }
     }
-  } while(!std::regex_match(playerPlace, firstPlace));
+  } while(!std::regex_match(playerPlace, firstPlace) && playerPlace.compare("save") != 0);
   //place tile at N13 (center of board), remove tile from hand
+  if(playerPlace.compare("save") == 0){
+    //saveGame();
+    char* input = new char(' ');
+    printMainMenu(input);
+  }
   board[13][13] = currentPlayer->hand->get(posOfTile)->tile;
   currentPlayer->hand->remove(posOfTile);
   // remove a tile from bag and place in hand
@@ -216,55 +233,125 @@ void gameplay(){
      //   5. The user prompt
      //   6. Execute user prompt
      //   7. gameplay()
-
-     std::cout << "\n" << currentPlayer->name << ", it's your turn\n";
-     for (std::vector<Player*>::iterator it = players.begin(); it != players.end(); ++it){
-       std::cout << "Score for " << (*it)->name << ": " << (*it)->score << std::endl;
-     }
-     printBoard();
-     std::cout << "Your hand is\n";
-     currentPlayer->displayHand();
      std::string playerPlace;
-     std::regex place("(place )[ROYGBP][1-6]( at )[A-Z](2[0-5]|1[0-9]|0?[0-9])");
-     int posOfTile;
-     do {
-       std::cout << "Choose tile to place at [ROW LETTER][COL NUMBER]\n> ";
-       std::getline(std::cin, playerPlace);
-       // check input matches regex
-       if(std::regex_match(playerPlace, place)){
-         // get tile index in hand and coordinates position
-         char tileColour = playerPlace.at(COLOUR_REGEX_INDEX);
-         char charTileShape = playerPlace.at(SHAPE_REGEX_INDEX);
-         char rowChar = playerPlace.at(ROW_CHAR_REGEX_INDEX);
-         std::string colInt = playerPlace.substr(COL_INT_REGEX_INDEX);
-         // 48 is ASCII where numbers begin, minusing it yields result
-         int tileShape = charTileShape - ASCII_TO_INT;
+     int rowIndex;
+     int colIndex;
 
-         std::cout << "Tile : " << tileColour << tileShape << "\nPOS : " << rowChar << colInt << std::endl;
-         // valid tile selection and board bounds check
-         // needs additional && statements
-         // row letter between A-Z && col number > 0 && col number < 26
-         if(currentPlayer->hand->search(tileColour, tileShape)){
-
-           posOfTile = currentPlayer->hand->getPosition(tileColour, tileShape);
-         }
-         else {
-           std::cout << "INVALID INPUT - Please enter a tile from your hand or Coordinate within bounds" << std::endl;
-           playerPlace = "";
-         }
+     while(playerPlace.compare("save") != 0){
+       std::cout << "\n" << currentPlayer->name << ", it's your turn\n";
+       for (std::vector<Player*>::iterator it = players.begin(); it != players.end(); ++it){
+         std::cout << "Score for " << (*it)->name << ": " << (*it)->score << std::endl;
        }
-     } while(!std::regex_match(playerPlace, place));
-     //
-     board[13][13] = currentPlayer->hand->get(posOfTile)->tile;
-     currentPlayer->hand->remove(posOfTile);
-     // remove a tile from bag and place in hand
-     int tileInBag = bag->removeFromBag();
-     currentPlayer->hand->addBack(bag->get(tileInBag)->tile);
-     bag->remove(tileInBag);
-     // increment score, on first turn can only place 1 tile so score must be 1
-     currentPlayer->score++;
+       printBoard();
+       std::cout << "Your hand is\n";
+       currentPlayer->displayHand();
+       std::regex place("(place )[ROYGBP][1-6]( at )[A-Z](2[0-5]|1[0-9]|0?[0-9])");
+       int posOfTile;
+       do {
+         std::cout << "Choose tile to place at [ROW LETTER][COL NUMBER]\n> ";
+         std::getline(std::cin, playerPlace);
+         // check input matches regex
+         if(std::regex_match(playerPlace, place)){
+           // get tile index in hand and coordinates position
+           char tileColour = playerPlace.at(COLOUR_REGEX_INDEX);
+           char charTileShape = playerPlace.at(SHAPE_REGEX_INDEX);
+           char rowChar = playerPlace.at(ROW_CHAR_REGEX_INDEX);
+           std::string colString = playerPlace.substr(COL_INT_REGEX_INDEX);
+           // 48 is ASCII where numbers begin, minusing it yields result
+           int tileShape = charTileShape - ASCII_TO_INT;
+           // each row will have the index of its ascii value minus the ascii value of 'A'
+           rowIndex = rowChar - ASCII_A;
+           colIndex = std::stoi(colString);
+
+           // std::cout << "Tile : " << tileColour << tileShape << "\nPOS : row = " << rowIndex << " col = " << colIndex << std::endl;
+           // valid tile selection and board bounds check
+           if(currentPlayer->hand->search(tileColour, tileShape)){
+             posOfTile = currentPlayer->hand->getPosition(tileColour, tileShape);
+             if(rowIndex >= INDEX_ZERO && rowIndex < BOARD_SIZE && colIndex >= INDEX_ZERO && colIndex < BOARD_SIZE ){
+               // move legality check
+               if(validMove(tileColour, tileShape, rowIndex, colIndex)){
+                 // happy to place tile there
+                 std::cout << "VALID MOVE\n";
+               }
+               else {
+                 std::cout << "INVALID INPUT - Not a valid move" << std::endl;
+                 playerPlace = "";
+               }
+             }
+             else{
+               std::cout << "INVALID INPUT - Please enter a valid coordinate" << std::endl;
+               playerPlace = "";
+             }
+          }
+           else {
+             std::cout << "INVALID INPUT - Please enter a tile from your hand" << std::endl;
+             playerPlace = "";
+           }
+         }
+       } while(!std::regex_match(playerPlace, place) && playerPlace.compare("save") != 0);
+       //
+       if(playerPlace.compare("save") == 0){
+         //saveGame();
+         char* input = new char(' ');
+         printMainMenu(input);
+       }
+       board[rowIndex][colIndex] = currentPlayer->hand->get(posOfTile)->tile;
+       currentPlayer->hand->remove(posOfTile);
+       // remove a tile from bag and place in hand
+       int tileInBag = bag->removeFromBag();
+       currentPlayer->hand->addBack(bag->get(tileInBag)->tile);
+       bag->remove(tileInBag);
+       // increment score
+       currentPlayer->score++;
 
 
-     // current player is ready for next players move
-     currentPlayer = players.at(1);
+       // current player is ready for next players move
+       currentPlayer = players.at(1);
+     }
+}
+
+bool validMove(char tileColour, int tileShape, int row, int col){
+  //check surrounding location
+  LinkedList* vertical = new LinkedList();
+  LinkedList* horizontal = new LinkedList();
+  // vetical check
+  if(board[row+1][col] != nullptr || board[row-1][col] != nullptr){
+    // put new tile as head of linked list
+    vertical->addFront(new Tile(tileColour, tileShape));
+    int temp = row;
+    // check positions below the placed tile
+    while(board[temp+1][col] != nullptr){
+      vertical->addBack(board[temp+1][col]);
+      temp++;
+    }
+    temp = row;
+    // check positions above the placed tile
+    while(board[temp-1][col] != nullptr){
+      vertical->addFront(board[temp+1][col]);
+      temp++;
+    }
+  }
+  //horizontal check
+  if(board[row][col+1] != nullptr || board[row][col-1] != nullptr){
+    // put new tile as head of linked list
+    horizontal->addFront(new Tile(tileColour, tileShape));
+    int temp = col;
+    // check positions below the placed tile
+    while(board[temp][temp+1] != nullptr){
+      horizontal->addBack(board[temp+1][col]);
+      temp++;
+    }
+    temp = row;
+    // check positions above the placed tile
+    while(board[temp][temp-1] != nullptr){
+      horizontal->addFront(board[row][temp-1]);
+      temp++;
+    }
+  }
+  if(horizontal->size() > 1 || vertical->size() > 1){
+    return true;
+  }
+  //      - duplicate valid move
+  //      - same type/colour valid move
+  return false;
 }
