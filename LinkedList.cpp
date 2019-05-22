@@ -66,18 +66,24 @@ Node* LinkedList::get(int pos){
   return currentNode;
 }
 
+// remove mehtods could be void??
 Node* LinkedList::remove(int pos){
   pos--;
+  Node* currentNode = head;
+  Node* previousNode = nullptr;
   if (pos < 0 || pos > size()){
     return nullptr;
   }
-  Node* currentNode = head;
-  Node* previousNode = nullptr;
-  for(int i = 0; i < pos; i++){
-    previousNode = currentNode;
-    currentNode = currentNode->next;
+  if(pos == 0){
+    return removeHead();
   }
-  previousNode->next = currentNode->next;
+  else{
+    for(int i = 0; i < pos; i++){
+      previousNode = currentNode;
+      currentNode = currentNode->next;
+    }
+    previousNode->next = currentNode->next;
+  }
   return currentNode;
 }
 
@@ -108,6 +114,31 @@ void LinkedList::display(){
     }
     std::cout << std::endl;
   }
+}
+
+bool LinkedList::search(char searchColour, int searchShape){
+  Node* currentNode = head;
+  while(currentNode->next != nullptr){
+    Tile* tile = currentNode->tile;
+    if(tile->colour == searchColour && tile->shape == searchShape){
+      return true;
+    }
+  }
+  return false;
+}
+
+int LinkedList::positionSearch(char searchColour, int searchShape){
+  Node* currentNode = head;
+  int index = 0;
+  while(currentNode->next != nullptr){
+    Tile* tile = currentNode->tile;
+    index++;
+    if(tile->colour == searchColour && tile->shape == searchShape){
+      return index;
+    }
+    currentNode = currentNode->next;
+  }
+  return -1;
 }
 
 int LinkedList::size(){
