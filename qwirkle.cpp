@@ -463,67 +463,7 @@ void saveGame(){
 }
 
 void gameplay(){
-<<<<<<< HEAD
-  // while !gameOver
-  //   1. The name of the current player
-  //   2. The scores of both players
-  //   3. The state of the board
-  //   4. The tiles in the current player’s hand
-  //   5. The user prompt
-  //   6. Execute user prompt
-  //   7. gameplay()
 
-  std::cout << "\n" << currentPlayer->name << ", it's your turn\n";
-  for (std::vector<Player*>::iterator it = players.begin(); it != players.end(); ++it){
-    std::cout << "Score for " << (*it)->name << ": " << (*it)->score << std::endl;
-  }
-  printBoard();
-  std::cout << "Your hand is\n";
-  currentPlayer->displayHand();
-  std::string playerPlace;
-  std::regex place("(place )[ROYGBP][1-6]( at )[A-Z](2[0-5]|1[0-9]|0?[0-9])");
-  int posOfTile = 0;
-  do {
-    std::cout << "Choose tile to place at [ROW LETTER][COL NUMBER]\n> ";
-    std::getline(std::cin, playerPlace);
-    // check input matches regex
-    if(std::regex_match(playerPlace, place)){
-      // get tile index in hand and coordinates position
-      char tileColour = playerPlace.at(COLOUR_REGEX_INDEX);
-      char charTileShape = playerPlace.at(SHAPE_REGEX_INDEX);
-      char rowChar = playerPlace.at(ROW_CHAR_REGEX_INDEX);
-      std::string colInt = playerPlace.substr(COL_INT_REGEX_INDEX);
-      // 48 is ASCII where numbers begin, minusing it yields result
-      int tileShape = charTileShape - ASCII_TO_INT;
-
-      std::cout << "Tile : " << tileColour << tileShape << "\nPOS : " << rowChar << colInt << std::endl;
-      // valid tile selection and board bounds check
-      // needs additional && statements
-      // row letter between A-Z && col number > 0 && col number < 26
-      if(currentPlayer->hand->search(tileColour, tileShape)){
-
-        posOfTile = currentPlayer->hand->getPosition(tileColour, tileShape);
-      }
-      else {
-        std::cout << "INVALID INPUT - Please enter a tile from your hand or Coordinate within bounds" << std::endl;
-        playerPlace = "";
-      }
-    }
-  } while(!std::regex_match(playerPlace, place));
-  //
-  board[13][13] = currentPlayer->hand->get(posOfTile)->tile;
-  currentPlayer->hand->remove(posOfTile);
-  // remove a tile from bag and place in hand
-  int tileInBag = bag->removeFromBag();
-  currentPlayer->hand->addBack(bag->get(tileInBag)->tile);
-  bag->remove(tileInBag);
-  // increment score, on first turn can only place 1 tile so score must be 1
-  currentPlayer->score++;
-
-
-  // current player is ready for next players move
-  currentPlayer = players.at(1);
-=======
      // while !gameOver
      //   1. The name of the current player
      //   2. The scores of both players
@@ -594,11 +534,11 @@ void gameplay(){
        } while(!std::regex_match(playerPlace, place) && playerPlace.compare("save") != 0 && !std::regex_match(playerPlace, replace));
        //
        if(playerPlace.compare("save") == 0){
-         //saveGame();
+         saveGame();
          char* input = new char(' ');
          printMainMenu(input);
        }
-       std::regex_match(playerPlace, replace){
+       if(std::regex_match(playerPlace, replace)){
           currentPlayer->replaceTile(posOfTile, *bag);
        }
        board[rowIndex][colIndex] = currentPlayer->hand->get(posOfTile)->tile;
@@ -662,5 +602,4 @@ bool validMove(char tileColour, int tileShape, int row, int col){
   //      - duplicate valid move
   //      - same type/colour valid move
   return false;
->>>>>>> jono
 }
