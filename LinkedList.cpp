@@ -118,19 +118,20 @@ void LinkedList::display(){
 
 bool LinkedList::search(char searchColour, int searchShape){
   Node* currentNode = head;
-  while(currentNode->next != nullptr){
+  while(currentNode != nullptr){
     Tile* tile = currentNode->tile;
     if(tile->colour == searchColour && tile->shape == searchShape){
       return true;
     }
+    currentNode = currentNode->next;
   }
   return false;
 }
 
-int LinkedList::positionSearch(char searchColour, int searchShape){
+int LinkedList::getPosition(char searchColour, int searchShape){
   Node* currentNode = head;
   int index = 0;
-  while(currentNode->next != nullptr){
+  while(currentNode != nullptr){
     Tile* tile = currentNode->tile;
     index++;
     if(tile->colour == searchColour && tile->shape == searchShape){
