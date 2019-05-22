@@ -224,7 +224,7 @@ void firstMove(){
 
   std::string playerPlace;
   std::regex firstPlace("(place )[ROYGBP][1-6]");
-  int posOfTile;
+  int posOfTile = 0;
   do {
     std::cout << "Choose tile to place at N13\n> ";
     std::getline(std::cin, playerPlace);
@@ -467,7 +467,7 @@ void gameplay(){
      currentPlayer->displayHand();
      std::string playerPlace;
      std::regex place("(place )[ROYGBP][1-6]( at )[A-Z](2[0-5]|1[0-9]|0?[0-9])");
-     int posOfTile;
+     int posOfTile = 0;
      do {
        std::cout << "Choose tile to place at [ROW LETTER][COL NUMBER]\n> ";
        std::getline(std::cin, playerPlace);
