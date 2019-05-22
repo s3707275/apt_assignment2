@@ -361,7 +361,7 @@ bool boardCreation(std::vector<std::string> gameData, int playing, int counter){
       int shape = std::stoi(tileBag.substr((y + 1),1));
       //std::cout << colour << "" << shape << ", ";
       Tile* tile = new Tile(colour,shape);
-      bag->addBack(tile);
+      bag->addFront(tile);
       y += 2; // move across string to next tile
     }
   }
