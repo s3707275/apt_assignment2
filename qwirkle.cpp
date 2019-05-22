@@ -300,7 +300,7 @@ void gameplay(){
          printMainMenu(input);
        }
        std::regex_match(playerPlace, replace){
-         
+          currentPlayer->replaceTile(posOfTile, *bag);
        }
        board[rowIndex][colIndex] = currentPlayer->hand->get(posOfTile)->tile;
        currentPlayer->hand->remove(posOfTile);
