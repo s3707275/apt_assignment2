@@ -72,58 +72,58 @@ void runMenu(char* input){
   }
   else if(*input == '2'){
 
-// User enters relative path
-std::string input;
-std::cout << "Enter file path" << std::endl;
+    // User enters relative path
+    std::string input;
+    std::cout << "Enter file path" << std::endl;
 
-std::cin >> input; // "saveFile.txt"
+    std::cin >> input; // "saveFile.txt"
 
-// Information from saveFile.txt is stored into data vector
-std::ifstream file(input);
-int counter = 0;
-std::vector<std::string> gameData;
-std::string line;
+    // Information from saveFile.txt is stored into data vector
+    std::ifstream file(input);
+    int counter = 0;
+    std::vector<std::string> gameData;
+    std::string line;
 
-if(file.is_open()){
-  while(getline(file, line)){
-    gameData.push_back(line);
-    counter++;
+    if(file.is_open()){
+      while(getline(file, line)){
+        gameData.push_back(line);
+        counter++;
+      }
+
+      // Player information is separated into its own vector
+      std::vector<std::string> playerData;
+      int playing = counter - 30; // The board + last 2 lines (bag and current player)
+      for(int x = 0; x < playing; x++){
+        playerData.push_back(gameData.at(x));
+      }
+
+      // Each vector is used to re-create the game
+      // If successful both functions will return true
+      bool playerSuccess = playerCreation(playerData, playing);
+      bool boardSuccess = boardCreation(gameData, playing, counter);
+
+      // current player is always last line in file
+      std::string currentplayer = gameData.at(gameData.size() - 1);
+      std::cout << "Current Player: " << currentplayer << std::endl;
+
+      // If game has successfully been re-created
+      if(playerSuccess == true && boardSuccess == true){
+        std::cout << "Qwirkle game successfully loaded" << std::endl;
+      }
+      else{
+        std::cerr << "Game load failed" << std::endl;
+      }
+    }
+    else{
+      std::cerr << "Unable to open file" << std::endl;
+    }
+    file.close();
+
+    // Use to test accuracy of load in
+    // std::cout << "CURRENT BOARD" << std::endl;
+    // printBoard();
+
   }
-
-  // Player information is separated into its own vector
-  std::vector<std::string> playerData;
-  int playing = counter - 30; // The board + last 2 lines (bag and current player)
-  for(int x = 0; x < playing; x++){
-    playerData.push_back(gameData.at(x));
-  }
-
-  // Each vector is used to re-create the game
-  // If successful both functions will return true
-  bool playerSuccess = playerCreation(playerData, playing);
-  bool boardSuccess = boardCreation(gameData, playing, counter);
-
-  // current player is always last line in file
-  std::string currentplayer = gameData.at(gameData.size() - 1);
-  std::cout << "Current Player: " << currentplayer << std::endl;
-
-  // If game has successfully been re-created
-  if(playerSuccess == true && boardSuccess == true){
-    std::cout << "Qwirkle game successfully loaded" << std::endl;
-  }
-  else{
-    std::cerr << "Game load failed" << std::endl;
-  }
-}
-else{
-  std::cerr << "Unable to open file" << std::endl;
-}
-file.close();
-
-// Use to test accuracy of load in
-// std::cout << "CURRENT BOARD" << std::endl;
-// printBoard();
-
-}
   else if(*input == '3'){
     std::cout << "\n\n------------------------------\n" << std::endl;
     std::cout << "Name: Jonathan Diver" << std::endl;
@@ -270,46 +270,46 @@ bool playerCreation(std::vector<std::string> playerData, int playing){
   std::regex scoreRegex("[0-9]+");
   Player* player;
   // For each player: find name, score, hand and re-create
-    for(int x = 0; x < playing; x++){
-      player = nullptr;
+  for(int x = 0; x < playing; x++){
+    player = nullptr;
 
-        // find Name
-        if(std::regex_match(playerData.at(x), nameRegex) && success == true){
-          name = playerData.at(x);
-          std::cout <<"Player Name: "<< name << std::endl;
+    // find Name
+    if(std::regex_match(playerData.at(x), nameRegex) && success == true){
+      name = playerData.at(x);
+      std::cout <<"Player Name: "<< name << std::endl;
 
-          // find Score
-          if(std::regex_match(playerData.at(x + 1), scoreRegex)){
-            score = std::stoi(playerData.at(x + 1));
-            std::cout <<"Player Score: "<< score << std::endl;
-            player = new Player(name);
-            player->score = score;
-            players.push_back(player);
+      // find Score
+      if(std::regex_match(playerData.at(x + 1), scoreRegex)){
+        score = std::stoi(playerData.at(x + 1));
+        std::cout <<"Player Score: "<< score << std::endl;
+        player = new Player(name);
+        player->score = score;
+        players.push_back(player);
 
-            // Breaks up and adds each tile individually
-            playerHand = playerData.at(x + 2);
-            std::cout << "Player Hand: ";
-            int length = playerHand.length();
-            for(int y = 0; y < length; y++){
-              if(playerHand.substr(y,1) != ","){
-                std::string letter = playerHand.substr(y,1);
-                char colour = letter.at(0);
-                int shape = std::stoi(playerHand.substr((y + 1),1));
-                std::cout << colour << "" << shape << ", ";
-                Tile* tile = new Tile(colour,shape);
-                player->addTile(tile);
-                y += 2; // go to next tile
-              }
-            }
+        // Breaks up and adds each tile individually
+        playerHand = playerData.at(x + 2);
+        std::cout << "Player Hand: ";
+        int length = playerHand.length();
+        for(int y = 0; y < length; y++){
+          if(playerHand.substr(y,1) != ","){
+            std::string letter = playerHand.substr(y,1);
+            char colour = letter.at(0);
+            int shape = std::stoi(playerHand.substr((y + 1),1));
+            std::cout << colour << "" << shape << ", ";
+            Tile* tile = new Tile(colour,shape);
+            player->addTile(tile);
+            y += 2; // go to next tile
           }
         }
-        else{
-          // regex found error, stop making players and eventually return false
-          success = false;
-        }
-        std::cout << std::endl;
-        x += 2; // Move to next player
       }
+    }
+    else{
+      // regex found error, stop making players and eventually return false
+      success = false;
+    }
+    std::cout << std::endl;
+    x += 2; // Move to next player
+  }
   return success;
 }
 
@@ -318,7 +318,7 @@ bool boardCreation(std::vector<std::string> gameData, int playing, int counter){
   std::string tileBag;
   std::string colour;
   std::string shape;
-
+  std::string letter;
   std::string row;
   std::smatch matches;
   std::regex rowRegex("[A-Z]+");
@@ -385,124 +385,124 @@ bool boardCreation(std::vector<std::string> gameData, int playing, int counter){
 
 void saveGame(){
 
-// writing
-std::ofstream file;
-file.open("saveFile.txt");
+  // writing
+  std::ofstream file;
+  file.open("saveFile.txt");
 
-if(file.is_open()){
-  // Writes each player's name, score and hand to  saveFile.txt file
-  for(Player* player : players){
-    file << player->name;
-    file << "\n";
-    file << player->score;
-    file << "\n";
-    for(int x = 1; x <= TOTAL_TILES; x++){
-      file << player->get(x)->tile->colour;
-      file << player->get(x)->tile->shape;
+  if(file.is_open()){
+    // Writes each player's name, score and hand to  saveFile.txt file
+    for(Player* player : players){
+      file << player->name;
+      file << "\n";
+      file << player->score;
+      file << "\n";
+      for(int x = 1; x <= TOTAL_TILES; x++){
+        file << player->get(x)->tile->colour;
+        file << player->get(x)->tile->shape;
+        file << " ";
+      }
+      file << "\n";
+    }
+
+    // Writes board to saveFile.txt file
+    char rowLetter = 'A';
+    file << COL_INDEX;
+    file << HASH_ROW;
+    for(int i = 0; i < BOARD_SIZE; i++){
+      file << rowLetter << "  |";
+      rowLetter++;
+      for(int j = 0; j < BOARD_SIZE; j++){
+        if(board[i][j] == nullptr){
+          file << "  |";
+        }
+        else{
+          file << board[i][j]->colour;
+          file << board[i][j]->shape;
+          file << "|";
+        }
+      }
+      file << "\n";
+    }
+
+    // Writes bag and current player to saveFile.txt file
+    for(int x = 1; x <= bag->size(); x++){
+      file << bag->get(x)->tile->colour;
+      file << bag->get(x)->tile->shape;
       file << " ";
     }
     file << "\n";
-  }
 
-  // Writes board to saveFile.txt file
-  char rowLetter = 'A';
-  file << COL_INDEX;
-  file << HASH_ROW;
-  for(int i = 0; i < BOARD_SIZE; i++){
-    file << rowLetter << "  |";
-    rowLetter++;
-    for(int j = 0; j < BOARD_SIZE; j++){
-      if(board[i][j] == nullptr){
-        file << "  |";
-      }
-      else{
-        file << board[i][j]->colour;
-        file << board[i][j]->shape;
-        file << "|";
-      }
-    }
+    file << currentPlayer->name;
     file << "\n";
+
+    std::cout << "Game successfully saved" << std::endl;
+  }
+  else{
+    std::cerr << "Unable to open file" << std::endl;
   }
 
-  // Writes bag and current player to saveFile.txt file
-  for(int x = 1; x <= bag->size(); x++){
-    file << bag->get(x)->tile->colour;
-    file << bag->get(x)->tile->shape;
-    file << " ";
-  }
-  file << "\n";
-
-  file << currentPlayer->name;
-  file << "\n";
-
-  std::cout << "Game successfully saved" << std::endl;
-}
-else{
-  std::cerr << "Unable to open file" << std::endl;
-}
-
-file.close();
-// back to gameplay
+  file.close();
+  // back to gameplay
 }
 
 void gameplay(){
-     // while !gameOver
-     //   1. The name of the current player
-     //   2. The scores of both players
-     //   3. The state of the board
-     //   4. The tiles in the current player’s hand
-     //   5. The user prompt
-     //   6. Execute user prompt
-     //   7. gameplay()
+  // while !gameOver
+  //   1. The name of the current player
+  //   2. The scores of both players
+  //   3. The state of the board
+  //   4. The tiles in the current player’s hand
+  //   5. The user prompt
+  //   6. Execute user prompt
+  //   7. gameplay()
 
-     std::cout << "\n" << currentPlayer->name << ", it's your turn\n";
-     for (std::vector<Player*>::iterator it = players.begin(); it != players.end(); ++it){
-       std::cout << "Score for " << (*it)->name << ": " << (*it)->score << std::endl;
-     }
-     printBoard();
-     std::cout << "Your hand is\n";
-     currentPlayer->displayHand();
-     std::string playerPlace;
-     std::regex place("(place )[ROYGBP][1-6]( at )[A-Z](2[0-5]|1[0-9]|0?[0-9])");
-     int posOfTile = 0;
-     do {
-       std::cout << "Choose tile to place at [ROW LETTER][COL NUMBER]\n> ";
-       std::getline(std::cin, playerPlace);
-       // check input matches regex
-       if(std::regex_match(playerPlace, place)){
-         // get tile index in hand and coordinates position
-         char tileColour = playerPlace.at(COLOUR_REGEX_INDEX);
-         char charTileShape = playerPlace.at(SHAPE_REGEX_INDEX);
-         char rowChar = playerPlace.at(ROW_CHAR_REGEX_INDEX);
-         std::string colInt = playerPlace.substr(COL_INT_REGEX_INDEX);
-         // 48 is ASCII where numbers begin, minusing it yields result
-         int tileShape = charTileShape - ASCII_TO_INT;
+  std::cout << "\n" << currentPlayer->name << ", it's your turn\n";
+  for (std::vector<Player*>::iterator it = players.begin(); it != players.end(); ++it){
+    std::cout << "Score for " << (*it)->name << ": " << (*it)->score << std::endl;
+  }
+  printBoard();
+  std::cout << "Your hand is\n";
+  currentPlayer->displayHand();
+  std::string playerPlace;
+  std::regex place("(place )[ROYGBP][1-6]( at )[A-Z](2[0-5]|1[0-9]|0?[0-9])");
+  int posOfTile = 0;
+  do {
+    std::cout << "Choose tile to place at [ROW LETTER][COL NUMBER]\n> ";
+    std::getline(std::cin, playerPlace);
+    // check input matches regex
+    if(std::regex_match(playerPlace, place)){
+      // get tile index in hand and coordinates position
+      char tileColour = playerPlace.at(COLOUR_REGEX_INDEX);
+      char charTileShape = playerPlace.at(SHAPE_REGEX_INDEX);
+      char rowChar = playerPlace.at(ROW_CHAR_REGEX_INDEX);
+      std::string colInt = playerPlace.substr(COL_INT_REGEX_INDEX);
+      // 48 is ASCII where numbers begin, minusing it yields result
+      int tileShape = charTileShape - ASCII_TO_INT;
 
-         std::cout << "Tile : " << tileColour << tileShape << "\nPOS : " << rowChar << colInt << std::endl;
-         // valid tile selection and board bounds check
-         // needs additional && statements
-         // row letter between A-Z && col number > 0 && col number < 26
-         if(currentPlayer->hand->search(tileColour, tileShape)){
+      std::cout << "Tile : " << tileColour << tileShape << "\nPOS : " << rowChar << colInt << std::endl;
+      // valid tile selection and board bounds check
+      // needs additional && statements
+      // row letter between A-Z && col number > 0 && col number < 26
+      if(currentPlayer->hand->search(tileColour, tileShape)){
 
-           posOfTile = currentPlayer->hand->getPosition(tileColour, tileShape);
-         }
-         else {
-           std::cout << "INVALID INPUT - Please enter a tile from your hand or Coordinate within bounds" << std::endl;
-           playerPlace = "";
-         }
-       }
-     } while(!std::regex_match(playerPlace, place));
-     //
-     board[13][13] = currentPlayer->hand->get(posOfTile)->tile;
-     currentPlayer->hand->remove(posOfTile);
-     // remove a tile from bag and place in hand
-     int tileInBag = bag->removeFromBag();
-     currentPlayer->hand->addBack(bag->get(tileInBag)->tile);
-     bag->remove(tileInBag);
-     // increment score, on first turn can only place 1 tile so score must be 1
-     currentPlayer->score++;
+        posOfTile = currentPlayer->hand->getPosition(tileColour, tileShape);
+      }
+      else {
+        std::cout << "INVALID INPUT - Please enter a tile from your hand or Coordinate within bounds" << std::endl;
+        playerPlace = "";
+      }
+    }
+  } while(!std::regex_match(playerPlace, place));
+  //
+  board[13][13] = currentPlayer->hand->get(posOfTile)->tile;
+  currentPlayer->hand->remove(posOfTile);
+  // remove a tile from bag and place in hand
+  int tileInBag = bag->removeFromBag();
+  currentPlayer->hand->addBack(bag->get(tileInBag)->tile);
+  bag->remove(tileInBag);
+  // increment score, on first turn can only place 1 tile so score must be 1
+  currentPlayer->score++;
 
 
-     // current player is ready for next players move
-     currentPlayer = players.at(1);
+  // current player is ready for next players move
+  currentPlayer = players.at(1);
 }
