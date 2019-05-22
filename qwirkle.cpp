@@ -286,10 +286,6 @@ void gameplay(){
           }
           else if (std::regex_match(playerPlace, replace)) {
             posOfTile = currentPlayer->hand->getPosition(tileColour, tileShape);
-            if(rowIndex >= INDEX_ZERO && rowIndex < BOARD_SIZE && colIndex >= INDEX_ZERO && colIndex < BOARD_SIZE ){
-            //  currentPlayer->hand->replaceTileFunctions();
-            }
-
           }
            else {
              std::cout << "INVALID INPUT - Please enter a tile from your hand" << std::endl;
@@ -304,7 +300,7 @@ void gameplay(){
          printMainMenu(input);
        }
        std::regex_match(playerPlace, replace){
-
+         
        }
        board[rowIndex][colIndex] = currentPlayer->hand->get(posOfTile)->tile;
        currentPlayer->hand->remove(posOfTile);
