@@ -112,9 +112,9 @@ else{
 }
 file.close();
 
-// Testing accuracy of load in
-std::cout << "CURRENT BOARD" << std::endl;
-printBoard();
+// Use to test accuracy of load in
+// std::cout << "CURRENT BOARD" << std::endl;
+// printBoard();
 
 }
   else if(*input == '3'){
@@ -220,7 +220,6 @@ void firstMove(){
   int posOfTile;
   do {
     std::cout << "Choose tile to place at N13\n> ";
-    saveGame();
     std::getline(std::cin, playerPlace);
     // check if tile is in players hand
     if(std::regex_match(playerPlace, firstPlace)){
@@ -324,7 +323,7 @@ bool boardCreation(std::vector<std::string> gameData, int playing, int counter){
   // x begins at 1st line of board and continues until last value in gameData
   for(int x = playing; x < counter; x++){
     row = gameData.at(x);
-    int columnCounter = -1;
+    int colIndex = -1;
     if((x + 2) != counter){
       if(std::regex_search(row,matches,rowRegex)){ // Finds a row A,B,C,etc on the board
         if(std::regex_search(row,matches,tileRegex)){ // Finds any tiles in that row
@@ -332,12 +331,11 @@ bool boardCreation(std::vector<std::string> gameData, int playing, int counter){
             std::string letter = row.substr(z,1);
             char colour = letter.at(0);
             if(colour == '|'){
-              columnCounter++;
+              colIndex++;
             }
             if(std::regex_match(letter, rowRegex)){ // Finds beginning of tile i.e. A
               int shape = std::stoi(row.substr((z + 1),1));
               int rowIndex = x - playing - 2;
-              int colIndex = columnCounter;
               std::cout << "Tiles on board: ("<<rowIndex<<","<<colIndex<<") ";
               std::cout << colour << shape << std::endl;
               // using rowIndex and colIndex we can place each tile back into the 2D array
@@ -355,19 +353,23 @@ bool boardCreation(std::vector<std::string> gameData, int playing, int counter){
   }
 
   // Breaks up and adds each tile individually
-  std::cout <<"Tile Bag: ";
+  bag = new LinkedList();
   for(int y = 0; y < tileBag.length(); y++){
     if(tileBag.substr(y,1) != ","){
       std::string letter = tileBag.substr(y,1);
       char colour = letter.at(0);
       int shape = std::stoi(tileBag.substr((y + 1),1));
-      std::cout << colour << "" << shape << ", ";
-
-      // bag->addFront(tile) causes a seg fault classic stitch up
-      // Tile* tile = new Tile(colour,shape);
-      // bag->addFront(tile);
+      //std::cout << colour << "" << shape << ", ";
+      Tile* tile = new Tile(colour,shape);
+      bag->addBack(tile);
       y += 2; // move across string to next tile
     }
+  }
+  std::cout << std::endl;
+  std::cout <<"Tile Bag: ";
+  for(int x = 1; x <= bag->size(); x++){
+    std::cout << bag->get(x)->tile->colour;
+    std::cout << bag->get(x)->tile->shape << ", ";
   }
   std::cout << std::endl;
   return success;
@@ -415,8 +417,7 @@ if(file.is_open()){
   }
 
   // Writes bag and current player to saveFile.txt file
-  int bagSize = bag->size();
-  for(int x = 1; x <= bagSize; x++){
+  for(int x = 1; x <= bag->size(); x++){
     file << bag->get(x)->tile->colour;
     file << bag->get(x)->tile->shape;
     file << " ";
