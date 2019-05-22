@@ -50,11 +50,11 @@ Node* Player::get(int pos){
 // and replaces it with a new random tile from the bag
 void Player::replaceTile(int pos, LinkedList& bag){
 
-  // tile is removed from player's hand
+  // tile is stored and then removed from player's hand
   Tile* removed = hand->get(pos)->tile;
   hand->remove(pos);
 
-  // random tile is placed into player's hand
+  // random tile from bag is placed into player's hand
   int random = bag.removeFromBag();
   Tile* newTile = bag.get(random)->tile;
   hand->addFront(newTile);
