@@ -16,8 +16,8 @@ class Player {
     void giveNewHand(LinkedList& bag);
     void displayHand();
     void addTile(Tile* tile);
-    void removeTile();
-    void replaceTile();
+    void removeTile(int pos);
+    void replaceTile(int pos, LinkedList& bag);
     Node* get(int pos);
     int handSize();
 
@@ -25,7 +25,6 @@ class Player {
     std::string name;
     int score;
     LinkedList* hand;
-    // LinkedList hand;
 };
 
 #endif // ASSIGN2_PLAYER_H

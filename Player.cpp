@@ -34,12 +34,12 @@ void Player::displayHand(){
 
 // Adds a new tile to the head (pos) of the hand
 void Player::addTile(Tile* tile){
-
+  hand->addFront(tile);
 }
 
 // Removes specified tile from hand if it exists
-void Player::removeTile(){
-
+void Player::removeTile(int pos){
+  hand->remove(pos);
 }
 
 Node* Player::get(int pos){
@@ -48,8 +48,19 @@ Node* Player::get(int pos){
 
 // Removes specified tile from hand if it exists
 // and replaces it with a new random tile from the bag
-void Player::replaceTile(){
+void Player::replaceTile(int pos, LinkedList& bag){
 
+  // tile is removed from player's hand
+  Tile* removed = hand->get(pos)->tile;
+  hand->remove(pos);
+
+  // random tile is placed into player's hand
+  int random = bag.removeFromBag();
+  Tile* newTile = bag.get(random)->tile;
+  hand->addFront(newTile);
+
+  // removed tile is placed back into bag
+  bag.addFront(removed);
 }
 
 // returns the current amount of tiles in player's hand
