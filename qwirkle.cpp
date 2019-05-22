@@ -1,8 +1,10 @@
 
 #include "LinkedList.h"
 #include "Player.h"
+// #include "Tile.h"
 
 #include <iostream>
+#include <fstream>
 #include <regex>
 #include <vector>
 #include <string>
@@ -91,7 +93,6 @@ if(file.is_open()){
 
   // Each vector is used to re-create the game
   // If successful both functions will return true
-  // add this->
   bool playerSuccess = playerCreation(playerData, playing);
   bool boardSuccess = boardCreation(gameData, playing, counter);
 
@@ -270,12 +271,12 @@ bool playerCreation(std::vector<std::string> playerData, int playing){
           name = playerData.at(x);
           std::cout <<"Player Name: "<< name << std::endl;
 
-
           // find Score
           if(std::regex_match(playerData.at(x + 1), scoreRegex)){
             score = std::stoi(playerData.at(x + 1));
             std::cout <<"Player Score: "<< score << std::endl;
-            player = new Player(name, score);
+            player = new Player(name);
+            player->score = score;
             players.push_back(player);
 
             // Breaks up and adds each tile individually
@@ -284,13 +285,12 @@ bool playerCreation(std::vector<std::string> playerData, int playing){
             for(int y = 0; y < playerHand.length(); y++){
               if(playerHand.substr(y,1) != ","){
                 std::string letter = playerHand.substr(y,1);
-                char colour[letter.size() + 1];
-                strcpy(colour, letter.c_str());
+                char colour = letter.at(0);
                 int shape = std::stoi(playerHand.substr((y + 1),1));
                 std::cout << colour << "" << shape << ", ";
                 Tile* tile = new Tile(colour,shape);
                 player->addTile(tile);
-                y += 2;
+                y += 2; // go to next tile
               }
             }
           }
@@ -316,25 +316,28 @@ bool boardCreation(std::vector<std::string> gameData, int playing, int counter){
   std::regex rowRegex("[A-Z]+");
   std::regex tileRegex("[A-Z][0-9]+");
 
+  // uncomment to print the map from the file
+  // for(int x = playing; x < counter; x++){
+  //   std::cout << gameData.at(x) <<" index "<<x<< std::endl;
+  // }
+
   // x begins at 1st line of board and continues until last value in gameData
   for(int x = playing; x < counter; x++){
     row = gameData.at(x);
     int columnCounter = -1;
-
     if((x + 2) != counter){
-      if(std::regex_search (row,matches,rowRegex)){ // Finds a row A,B,C,etc on the board
-        if(std::regex_search (row,matches,tileRegex)){ // Finds any tiles in that row
+      if(std::regex_search(row,matches,rowRegex)){ // Finds a row A,B,C,etc on the board
+        if(std::regex_search(row,matches,tileRegex)){ // Finds any tiles in that row
           for(int z = 1; z < row.length(); z++){ // Start at 1 to skip row headings
             std::string letter = row.substr(z,1);
-            char colour[letter.size() + 1];
-            strcpy(colour, letter.c_str());
-            if(colour[0] == '|'){
+            char colour = letter.at(0);
+            if(colour == '|'){
               columnCounter++;
             }
-            if(std::regex_match(colour, rowRegex)){ // Finds beginning of tile i.e. A
+            if(std::regex_match(letter, rowRegex)){ // Finds beginning of tile i.e. A
               int shape = std::stoi(row.substr((z + 1),1));
               int rowIndex = x - playing - 2;
-              int colIndex = columnCounter + 1;
+              int colIndex = columnCounter;
               std::cout << "tile found at: "<<rowIndex<<","<<colIndex<<" ";
               std::cout << colour << shape << std::endl;
               // using rowIndex and colIndex we can place each tile back into the 2D array
@@ -347,60 +350,61 @@ bool boardCreation(std::vector<std::string> gameData, int playing, int counter){
     }
     else{
       tileBag = gameData.at(x);
-      x++;
+      x += 2;
     }
   }
 
   // Breaks up and adds each tile individually
-  std::cout << "Tile Bag: ";
+  std::cout <<"Tile Bag: ";
   for(int y = 0; y < tileBag.length(); y++){
     if(tileBag.substr(y,1) != ","){
       std::string letter = tileBag.substr(y,1);
-      char colour[letter.size() + 1];
-      strcpy(colour, letter.c_str());
+      char colour = letter.at(0);
       int shape = std::stoi(tileBag.substr((y + 1),1));
       std::cout << colour << "" << shape << ", ";
-      Tile* tile = new Tile(colour,shape);
-      bag->addFront(tile);
-      y += 2;
+
+      // bag->addFront(tile) causes a seg fault classic stitch up
+      // Tile* tile = new Tile(colour,shape);
+      // bag->addFront(tile);
+      y += 2; // move across string to next tile
     }
   }
   std::cout << std::endl;
   return success;
 }
 
-void saveGame(){
-
-// <player 1 name> DONE
-// <player 1 score> DONE
-// <player 1 hand> DONE
-// <player 2 name> DONE
-// <player 2 score> DONE
-// <player 2 hand> DONE
-// <board>
-// <tile bag contents>
-// <current player name>
-
-std::ofstream file;
-std::string fileName;
-std::cout << "Enter file path: " << std::endl;
-std::cin >> fileName; // saveFile.txt
-file.open(fileName);
-
-// Writes each player's name, score and hand to a file
-for(Player* player : players){
-  file << player->name;
-  file << "\n";
-  file << player->score;
-  file << "\n";
-  file << player->displayHand();
-  file << "\n";
-}
-// Still need to write board, bag and current player's name to file
-
-
-file.close();
-}
+// void saveGame(){
+//
+// // <player 1 name> DONE
+// // <player 1 score> DONE
+// // <player 1 hand> DONE
+// // <player 2 name> DONE
+// // <player 2 score> DONE
+// // <player 2 hand> DONE
+// // <board>
+// // <tile bag contents>
+// // <current player name>
+//
+// std::ofstream file;
+// std::string fileName;
+// std::cout << "Enter file path: " << std::endl;
+// std::cin >> fileName; // saveFile.txt
+// file.open(fileName);
+//
+// // Writes each player's name, score and hand to a file
+// for(Player* player : players){
+//   file << player->name;
+//   file << "\n";
+//   file << player->score;
+//   file << "\n";
+//   file << player->displayHand();
+//   file << "\n";
+// }
+// // Still need to write board, bag and current player's name to file
+//
+//
+// file.close();
+// }
 
 void gameplay(){
      // while !gameOver

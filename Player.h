@@ -15,7 +15,7 @@ class Player {
 
     void giveNewHand(LinkedList& bag);
     void displayHand();
-    void addTile();
+    void addTile(Tile* tile);
     void removeTile();
     void replaceTile();
     int handSize();

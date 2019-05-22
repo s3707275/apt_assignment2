@@ -29,7 +29,7 @@ void Player::displayHand(){
 }
 
 // Adds a new tile to the head (pos) of the hand
-void Player::addTile(){
+void Player::addTile(Tile* tile){
 
 }
 
