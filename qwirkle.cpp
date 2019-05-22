@@ -21,7 +21,6 @@ std::vector<Player*> players;
 Tile* board[BOARD_SIZE][BOARD_SIZE] = {{nullptr}};
 LinkedList* bag;
 Player* currentPlayer;
-std::vector<std::string> loadedBoard;
 
 void printMainMenu(char* input);
 void runMenu(char* input);
@@ -95,20 +94,13 @@ if(file.is_open()){
   // If successful both functions will return true
   bool playerSuccess = playerCreation(playerData, playing);
   bool boardSuccess = boardCreation(gameData, playing, counter);
-  std::cout << playerSuccess << std::endl;
-  std::cout << boardSuccess << std::endl;
 
   // current player is always last line in file
   std::string currentplayer = gameData.at(gameData.size() - 1);
   std::cout << "Current Player: " << currentplayer << std::endl;
 
-  for(std::string data : loadedBoard){
-    std::cout << data << std::endl;
-  }
-
   // If game has successfully been re-created
   if(playerSuccess == true && boardSuccess == true){
-
     std::cout << "Qwirkle game successfully loaded" << std::endl;
   }
   else{
@@ -119,6 +111,10 @@ else{
   std::cerr << "Unable to open file" << std::endl;
 }
 file.close();
+
+// Testing accuracy of load in
+std::cout << "CURRENT BOARD" << std::endl;
+printBoard();
 
 }
   else if(*input == '3'){
@@ -390,7 +386,7 @@ if(file.is_open()){
     file << "\n";
     file << player->score;
     file << "\n";
-    for(int x = 1; x < TOTAL_TILES; x++){
+    for(int x = 1; x <= TOTAL_TILES; x++){
       file << player->get(x)->tile->colour;
       file << player->get(x)->tile->shape;
       file << " ";
@@ -420,7 +416,7 @@ if(file.is_open()){
 
   // Writes bag and current player to saveFile.txt file
   int bagSize = bag->size();
-  for(int x = 1; x < bagSize; x++){
+  for(int x = 1; x <= bagSize; x++){
     file << bag->get(x)->tile->colour;
     file << bag->get(x)->tile->shape;
     file << " ";
