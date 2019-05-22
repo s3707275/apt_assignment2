@@ -338,7 +338,6 @@ bool boardCreation(std::vector<std::string> gameData, int playing, int counter){
       if(std::regex_search(row,matches,rowRegex)){ // Finds a row A,B,C,etc on the board
         if(std::regex_search(row,matches,tileRegex)){ // Finds any tiles in that row
           for(int z = 1; z < length; z++){ // Start at 1 to skip row headings
-            std::string letter = row.substr(z,1);
             char colour = letter.at(0);
             if(colour == '|'){
               colIndex++;
@@ -346,8 +345,6 @@ bool boardCreation(std::vector<std::string> gameData, int playing, int counter){
             if(std::regex_match(letter, rowRegex)){ // Finds beginning of tile i.e. A
               int shape = std::stoi(row.substr((z + 1),1));
               int rowIndex = x - playing - 2;
-              std::cout << "Tiles on board: ("<<rowIndex<<","<<colIndex<<") ";
-              std::cout << colour << shape << std::endl;
               // using rowIndex and colIndex we can place each tile back into the 2D array
               Tile* tile = new Tile(colour, shape);
               board[rowIndex][colIndex] = tile;
