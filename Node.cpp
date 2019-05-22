@@ -1,6 +1,9 @@
 
 #include "Node.h"
 
+Tile* tile;
+Node* next;
+
 Node::Node(Tile* tile, Node* next)
 {
   this->tile = tile;

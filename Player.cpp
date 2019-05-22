@@ -1,6 +1,10 @@
 
 #include "Player.h"
 
+std::string name;
+int score;
+LinkedList* hand;
+
 Player::Player(std::string name){
   this->name = name;
   this->score = 0;
@@ -36,6 +40,10 @@ void Player::addTile(Tile* tile){
 // Removes specified tile from hand if it exists
 void Player::removeTile(){
 
+}
+
+Node* Player::get(int pos){
+  return hand->get(pos);
 }
 
 // Removes specified tile from hand if it exists

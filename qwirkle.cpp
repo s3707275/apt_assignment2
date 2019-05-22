@@ -95,6 +95,8 @@ if(file.is_open()){
   // If successful both functions will return true
   bool playerSuccess = playerCreation(playerData, playing);
   bool boardSuccess = boardCreation(gameData, playing, counter);
+  std::cout << playerSuccess << std::endl;
+  std::cout << boardSuccess << std::endl;
 
   // current player is always last line in file
   std::string currentplayer = gameData.at(gameData.size() - 1);
@@ -118,7 +120,7 @@ else{
 }
 file.close();
 
-  }
+}
   else if(*input == '3'){
     std::cout << "\n\n------------------------------\n" << std::endl;
     std::cout << "Name: Jonathan Diver" << std::endl;
@@ -137,6 +139,7 @@ file.close();
   }
   else {
     std::cout << "Goodbye!" << std::endl;
+    //saveGame();
     exit(0);
   }
 }
@@ -221,6 +224,7 @@ void firstMove(){
   int posOfTile;
   do {
     std::cout << "Choose tile to place at N13\n> ";
+    saveGame();
     std::getline(std::cin, playerPlace);
     // check if tile is in players hand
     if(std::regex_match(playerPlace, firstPlace)){
@@ -338,7 +342,7 @@ bool boardCreation(std::vector<std::string> gameData, int playing, int counter){
               int shape = std::stoi(row.substr((z + 1),1));
               int rowIndex = x - playing - 2;
               int colIndex = columnCounter;
-              std::cout << "tile found at: "<<rowIndex<<","<<colIndex<<" ";
+              std::cout << "Tiles on board: ("<<rowIndex<<","<<colIndex<<") ";
               std::cout << colour << shape << std::endl;
               // using rowIndex and colIndex we can place each tile back into the 2D array
               Tile* tile = new Tile(colour, shape);
@@ -373,38 +377,68 @@ bool boardCreation(std::vector<std::string> gameData, int playing, int counter){
   return success;
 }
 
-// void saveGame(){
-//
-// // <player 1 name> DONE
-// // <player 1 score> DONE
-// // <player 1 hand> DONE
-// // <player 2 name> DONE
-// // <player 2 score> DONE
-// // <player 2 hand> DONE
-// // <board>
-// // <tile bag contents>
-// // <current player name>
-//
-// std::ofstream file;
-// std::string fileName;
-// std::cout << "Enter file path: " << std::endl;
-// std::cin >> fileName; // saveFile.txt
-// file.open(fileName);
-//
-// // Writes each player's name, score and hand to a file
-// for(Player* player : players){
-//   file << player->name;
-//   file << "\n";
-//   file << player->score;
-//   file << "\n";
-//   file << player->displayHand();
-//   file << "\n";
-// }
-// // Still need to write board, bag and current player's name to file
-//
-//
-// file.close();
-// }
+void saveGame(){
+
+// writing
+std::ofstream file;
+file.open("saveFile.txt");
+
+if(file.is_open()){
+  // Writes each player's name, score and hand to  saveFile.txt file
+  for(Player* player : players){
+    file << player->name;
+    file << "\n";
+    file << player->score;
+    file << "\n";
+    for(int x = 1; x < TOTAL_TILES; x++){
+      file << player->get(x)->tile->colour;
+      file << player->get(x)->tile->shape;
+      file << " ";
+    }
+    file << "\n";
+  }
+
+  // Writes board to saveFile.txt file
+  char rowLetter = 'A';
+  file << COL_INDEX;
+  file << HASH_ROW;
+  for(int i = 0; i < BOARD_SIZE; i++){
+    file << rowLetter << "  |";
+    rowLetter++;
+    for(int j = 0; j < BOARD_SIZE; j++){
+      if(board[i][j] == nullptr){
+        file << "  |";
+      }
+      else{
+        file << board[i][j]->colour;
+        file << board[i][j]->shape;
+        file << "|";
+      }
+    }
+    file << "\n";
+  }
+
+  // Writes bag and current player to saveFile.txt file
+  int bagSize = bag->size();
+  for(int x = 1; x < bagSize; x++){
+    file << bag->get(x)->tile->colour;
+    file << bag->get(x)->tile->shape;
+    file << " ";
+  }
+  file << "\n";
+
+  file << currentPlayer->name;
+  file << "\n";
+
+  std::cout << "Game successfully saved" << std::endl;
+}
+else{
+  std::cerr << "Unable to open file" << std::endl;
+}
+
+file.close();
+// back to gameplay
+}
 
 void gameplay(){
      // while !gameOver

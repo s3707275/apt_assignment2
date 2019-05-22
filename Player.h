@@ -18,6 +18,7 @@ class Player {
     void addTile(Tile* tile);
     void removeTile();
     void replaceTile();
+    Node* get(int pos);
     int handSize();
 
   // private:
