@@ -246,6 +246,7 @@ void gameplay(){
        std::cout << "Your hand is\n";
        currentPlayer->displayHand();
        std::regex place("(place )[ROYGBP][1-6]( at )[A-Z](2[0-5]|1[0-9]|0?[0-9])");
+       std::regex replace("(replace )[ROYGBP][1-6]");
        int posOfTile;
        do {
          std::cout << "Choose tile to place at [ROW LETTER][COL NUMBER]\n> ";
@@ -283,17 +284,27 @@ void gameplay(){
                playerPlace = "";
              }
           }
+          else if (std::regex_match(playerPlace, replace)) {
+            posOfTile = currentPlayer->hand->getPosition(tileColour, tileShape);
+            if(rowIndex >= INDEX_ZERO && rowIndex < BOARD_SIZE && colIndex >= INDEX_ZERO && colIndex < BOARD_SIZE ){
+            //  currentPlayer->hand->replaceTileFunctions();
+            }
+
+          }
            else {
              std::cout << "INVALID INPUT - Please enter a tile from your hand" << std::endl;
              playerPlace = "";
            }
          }
-       } while(!std::regex_match(playerPlace, place) && playerPlace.compare("save") != 0);
+       } while(!std::regex_match(playerPlace, place) && playerPlace.compare("save") != 0 && !std::regex_match(playerPlace, replace));
        //
        if(playerPlace.compare("save") == 0){
          //saveGame();
          char* input = new char(' ');
          printMainMenu(input);
+       }
+       std::regex_match(playerPlace, replace){
+
        }
        board[rowIndex][colIndex] = currentPlayer->hand->get(posOfTile)->tile;
        currentPlayer->hand->remove(posOfTile);
@@ -330,6 +341,7 @@ bool validMove(char tileColour, int tileShape, int row, int col){
       vertical->addFront(board[temp+1][col]);
       temp++;
     }
+    vertical->display();
   }
   //horizontal check
   if(board[row][col+1] != nullptr || board[row][col-1] != nullptr){
@@ -347,6 +359,7 @@ bool validMove(char tileColour, int tileShape, int row, int col){
       horizontal->addFront(board[row][temp-1]);
       temp++;
     }
+    horizontal->display();
   }
   if(horizontal->size() > 1 || vertical->size() > 1){
     return true;
